@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Sun, 18 Oct 2020 09:11:36 +0000</lastBuildDate>
+        <lastBuildDate>Mon, 19 Oct 2020 09:12:27 +0000</lastBuildDate>
+        
+        <item>
+            <title>Micrometer is recommended for metrics with Quarkus 1.9</title>
+            <link>
+                https://quarkus.io/blog/micrometer-metrics/
+            </link>
+            <description>
+                Though Quarkus offers extensions for MicroProfile, including metrics, we&#8217;re now recommending the use of the Micrometer extension for metrics in Quarkus with the release of 1.9. Brief MicroProfile Metrics History During the creation of the MicroProfile Metrics specification in 2017, DropWizard Metrics was the most popular metrics library at that...
+            </description>
+            <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/micrometer-metrics/
+            </guid>
+        </item>
         
         <item>
             <title>Mutiny - How does retry... retries?</title>
@@ -130,20 +144,6 @@
             <pubDate>Mon, 28 Sep 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/quarkus-newsletter-8/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Cytech uses Quarkus to save Greek Tourism</title>
-            <link>
-                https://quarkus.io/blog/cytech-customer-story/
-            </link>
-            <description>
-                Tourism and Covid-19 It&#8217;s not new that tourism is one of the most affected industries from the Covid-19 pandemic. Hotels, restaurants, airlines, cruises are some of the businesses that had a really tough time this summer. Many countries, especially those whose economies rely on tourism, were looking for solutions to...
-            </description>
-            <pubDate>Wed, 23 Sep 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/cytech-customer-story/
             </guid>
         </item>
         
