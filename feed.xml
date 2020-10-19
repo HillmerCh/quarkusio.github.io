@@ -5,7 +5,7 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Mon, 19 Oct 2020 09:12:27 +0000</lastBuildDate>
+        <lastBuildDate>Mon, 19 Oct 2020 12:57:53 +0000</lastBuildDate>
         
         <item>
             <title>Micrometer is recommended for metrics with Quarkus 1.9</title>
@@ -13,7 +13,7 @@
                 https://quarkus.io/blog/micrometer-metrics/
             </link>
             <description>
-                Though Quarkus offers extensions for MicroProfile, including metrics, we&#8217;re now recommending the use of the Micrometer extension for metrics in Quarkus with the release of 1.9. Brief MicroProfile Metrics History During the creation of the MicroProfile Metrics specification in 2017, DropWizard Metrics was the most popular metrics library at that...
+                Though Quarkus offers extensions for MicroProfile, including metrics, we&#8217;re now recommending the use of the Micrometer extension for metrics in Quarkus with the release of 1.9. Brief MicroProfile Metrics History During the creation of the MicroProfile Metrics specification in 2017, Dropwizard Metrics was the most popular metrics library at that...
             </description>
             <pubDate>Mon, 19 Oct 2020 00:00:00 +0000</pubDate>
             <guid>
