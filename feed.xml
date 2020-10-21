@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Wed, 21 Oct 2020 09:18:41 +0000</lastBuildDate>
+        <lastBuildDate>Wed, 21 Oct 2020 13:50:38 +0000</lastBuildDate>
+        
+        <item>
+            <title>Quarkus 1.9 released - Micrometer extension maturing, multiple Redis clients, Quarkiverse</title>
+            <link>
+                https://quarkus.io/blog/quarkus-1-9-0-final-released/
+            </link>
+            <description>
+                Quarkus 1.9 comes with a lot of improvements on top of our existing feature set: The Micrometer extension is maturing Kafka now has metrics Multiple Redis clients are supported (as well as Sentinel connections) Bean Validation is supported by Reactive Routes SmallRye Reactive Messaging upgraded to 2.4.0 and Mutiny to...
+            </description>
+            <pubDate>Wed, 21 Oct 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-1-9-0-final-released/
+            </guid>
+        </item>
         
         <item>
             <title>Kafka - How to fail gracefully</title>
@@ -130,20 +144,6 @@
             <pubDate>Wed, 30 Sep 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/biased-locking-help/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Concurrent asynchronous actions with Mutiny</title>
-            <link>
-                https://quarkus.io/blog/mutiny-concurrent-uni/
-            </link>
-            <description>
-                This week, I&#8217;ve been asked about a widespread use case around concurrency. This user wanted to call two microservices in parallel, and when both results are received, join them and continue the processing. Basically, the following pattern: In a non-reactive approach, both calls would block the caller thread, and, except...
-            </description>
-            <pubDate>Tue, 29 Sep 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/mutiny-concurrent-uni/
             </guid>
         </item>
         
