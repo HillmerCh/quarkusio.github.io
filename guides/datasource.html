@@ -159,7 +159,7 @@ But you might also prefer using a reactive driver to connect to your database in
 <td class="content">
 <div class="paragraph">
 <p>Agroal is a modern, light weight connection pool implementation designed for very high performance and scalability,
-and features first class integration with the other components in Quarkus, such as security, transaction management components, health metrics.</p>
+and features first class integration with the other components in Quarkus, such as security, transaction management components, health, and metrics.</p>
 </div>
 </td>
 </tr>
@@ -210,7 +210,6 @@ quarkus.datasource.username=&lt;your username&gt;
 quarkus.datasource.password=&lt;your password&gt;
 
 quarkus.datasource.jdbc.url=jdbc:postgresql://localhost:5432/hibernate_orm_test
-quarkus.datasource.jdbc.min-size=4
 quarkus.datasource.jdbc.max-size=16</code></pre>
 </div>
 </div>
@@ -728,19 +727,16 @@ you define a name.</p>
 <pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">quarkus.datasource.db-kind=h2
 quarkus.datasource.username=username-default
 quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost/mem:default
-quarkus.datasource.jdbc.min-size=3
 quarkus.datasource.jdbc.max-size=13
 
 quarkus.datasource.users.db-kind=h2
 quarkus.datasource.users.username=username1
 quarkus.datasource.users.jdbc.url=jdbc:h2:tcp://localhost/mem:users
-quarkus.datasource.users.jdbc.min-size=1
 quarkus.datasource.users.jdbc.max-size=11
 
 quarkus.datasource.inventory.db-kind=h2
 quarkus.datasource.inventory.username=username2
 quarkus.datasource.inventory.jdbc.url=jdbc:h2:tcp://localhost/mem:inventory
-quarkus.datasource.inventory.jdbc.min-size=2
 quarkus.datasource.inventory.jdbc.max-size=12</code></pre>
 </div>
 </div>
@@ -792,12 +788,12 @@ If you have multiple datasources, all datasources will be checked and the status
 <h2 id="datasource-metrics"><a class="anchor" href="#datasource-metrics"></a>Datasource Metrics</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you are using the <code>quarkus-smallrye-metrics</code> extension, <code>quarkus-agroal</code> can expose some data source metrics on the
+<p>If you are using the <code>quarkus-micrometer</code> or <code>quarkus-smallrye-metrics</code> extension, <code>quarkus-agroal</code> can expose some data source metrics on the
 <code>/metrics</code> endpoint. This can be turned on by setting the property <code>quarkus.datasource.metrics.enabled</code> to true.</p>
 </div>
 <div class="paragraph">
 <p>For the exposed metrics to contain any actual values, it is necessary that metric collection is enabled internally
-by Agroal mechanisms. By default, this metric collection mechanism gets turned on for all data sources if the <code>quarkus-smallrye-metrics</code>
+by Agroal mechanisms. By default, this metric collection mechanism gets turned on for all data sources if a metrics extension
 is present and metrics for the Agroal extension are enabled. If you want to disable metrics for a particular data source,
 this can be done by setting <code>quarkus.datasource.jdbc.enable-metrics</code> to <code>false</code> (or <code>quarkus.datasource.&lt;datasource name&gt;.jdbc.enable-metrics</code> for a named datasource).
 This disables collecting the metrics as well as exposing them in the <code>/metrics</code> endpoint,
@@ -805,7 +801,7 @@ because it does not make sense to expose metrics if the mechanism to collect the
 </div>
 <div class="paragraph">
 <p>Conversely, setting <code>quarkus.datasource.jdbc.enable-metrics</code> to <code>true</code> (or <code>quarkus.datasource.&lt;datasource name&gt;.jdbc.enable-metrics</code> for a named datasource) explicitly can be used to enable collection of metrics even if
-the <code>quarkus-smallrye-metrics</code> extension is not in use.
+a metrics extension is not in use.
 This can be useful if you need to access the collected metrics programmatically.
 They are available after calling <code>dataSource.getMetrics()</code> on an injected <code>AgroalDataSource</code> instance. If collection of metrics is disabled
 for this data source, all values will be zero.</p>
@@ -999,18 +995,6 @@ quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost/mem:test</code></pre>
 <td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-datasource_quarkus.datasource.max-size"></a><code><a href="#quarkus-datasource_quarkus.datasource.max-size">quarkus.datasource.max-size</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>20</code></p></td>
-</tr>
-<tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-datasource_quarkus.datasource.named-data-sources-additional-named-datasources"></a><a href="#quarkus-datasource_quarkus.datasource.named-data-sources-additional-named-datasources">Additional named datasources</a></p></th>
 <th class="tableblock halign-left valign-middle"><p class="tableblock">Type</p></th>
 <th class="tableblock halign-left valign-middle"><p class="tableblock">Default</p></th>
@@ -1086,18 +1070,6 @@ quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost/mem:test</code></pre>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-middle"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-datasource_quarkus.datasource.-datasource-name-.max-size"></a><code><a href="#quarkus-datasource_quarkus.datasource.-datasource-name-.max-size">quarkus.datasource."datasource-name".max-size</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>20</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1381,6 +1353,20 @@ quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost/mem:test</code></pre>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-agroal_quarkus.datasource.jdbc.additional-jdbc-properties-additional-jdbc-properties"></a><code><a href="#quarkus-agroal_quarkus.datasource.jdbc.additional-jdbc-properties-additional-jdbc-properties">quarkus.datasource.jdbc.additional-jdbc-properties</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Other unspecified properties to be passed to the JDBC driver when creating new connections.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>Map&lt;String,String&gt;</code></p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-agroal_quarkus.datasource.named-data-sources-additional-named-datasources"></a><a href="#quarkus-agroal_quarkus.datasource.named-data-sources-additional-named-datasources">Additional named datasources</a></p></th>
 <th class="tableblock halign-left valign-middle"><p class="tableblock">Type</p></th>
 <th class="tableblock halign-left valign-middle"><p class="tableblock">Default</p></th>
@@ -1643,6 +1629,20 @@ quarkus.datasource.jdbc.url=jdbc:h2:tcp://localhost/mem:test</code></pre>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-agroal_quarkus.datasource.-datasource-name-.jdbc.additional-jdbc-properties-additional-jdbc-properties"></a><code><a href="#quarkus-agroal_quarkus.datasource.-datasource-name-.jdbc.additional-jdbc-properties-additional-jdbc-properties">quarkus.datasource."datasource-name".jdbc.additional-jdbc-properties</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Other unspecified properties to be passed to the JDBC driver when creating new connections.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>Map&lt;String,String&gt;</code></p></td>
+<td class="tableblock halign-left valign-middle"></td>
 </tr>
 </tbody>
 </table>

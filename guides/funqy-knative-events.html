@@ -90,7 +90,7 @@
 <li><a href="#maven">Maven</a></li>
 <li><a href="#dev-mode-and-testing">Dev mode and Testing</a></li>
 <li><a href="#build-the-project">Build the Project</a></li>
-<li><a href="#deploy-to-kubernetesopenshift">Deploy to Kubernetes/Openshift</a></li>
+<li><a href="#deploy-to-kubernetesopenshift">Deploy to Kubernetes/OpenShift</a></li>
 <li><a href="#run-the-demo">Run the demo</a></li>
 </ul></div>
     <div>
@@ -139,7 +139,7 @@ with Knative Events.</p>
 <div class="paragraph">
 <p>Setting up Knative locally in a Minikube environment is beyond the scope of this guide.  It is advised
 to follow  <a href="https://redhat-developer-demos.github.io/knative-tutorial/knative-tutorial/index.html">this</a> Knative Tutorial
-put together by Red Hat.  It walks through how to set up Knative on Minikube or Openshift in a local environment.</p>
+put together by Red Hat.  It walks through how to set up Knative on Minikube or OpenShift in a local environment.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -414,10 +414,10 @@ Dockerfile is a standard Quarkus dockerfile.  No special Knative magic.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="deploy-to-kubernetesopenshift"><a class="anchor" href="#deploy-to-kubernetesopenshift"></a>Deploy to Kubernetes/Openshift</h2>
+<h2 id="deploy-to-kubernetesopenshift"><a class="anchor" href="#deploy-to-kubernetesopenshift"></a>Deploy to Kubernetes/OpenShift</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The first step is to define a Kubernetes/Openshift service to points to your the docker image you created and pushed
+<p>The first step is to define a Kubernetes/OpenShift service to points to your the docker image you created and pushed
 during build.  Take a look at <a href="https://github.com/quarkusio/quarkus-quickstarts/tree/master/funqy-quickstarts/funqy-knative-events-quickstart/src/main/k8s/funqy-service.yaml">funqy-service.yaml</a></p>
 </div>
 <div class="listingblock">

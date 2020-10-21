@@ -118,6 +118,9 @@ In other words, instead of explicitly enforcing access based on some specific ac
 <p>By externalizing authorization from your application, you are allowed to protect your applications using different access control mechanisms as well as avoid re-deploying your application every time your security requirements change, where Keycloak will be acting as a centralized authorization service from where your protected resources and their associated permissions are managed.</p>
 </div>
 <div class="paragraph">
+<p>See the <a href="security-openid-connect">Using OpenID Connect to Protect Service Applications</a> guide for more information about <code>Bearer Token</code> authentication mechanism.</p>
+</div>
+<div class="paragraph">
 <p>If you are already familiar with Keycloak, you’ll notice that the extension is basically another adapter implementation but specific for Quarkus applications.
 Otherwise, you can find more information in the Keycloak <a href="https://www.keycloak.org/docs/latest/authorization_services/index.html#_enforcer_overview">documentation</a>.</p>
 </div>
@@ -337,9 +340,10 @@ The extension will be responsible to map the URIs of the protected resources you
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs"># OIDC Configuration
-quarkus.oidc.auth-server-url=http://localhost:8180/auth/realms/quarkus
+quarkus.oidc.auth-server-url=https://localhost:8543/auth/realms/quarkus
 quarkus.oidc.client-id=backend-service
 quarkus.oidc.credentials.secret=secret
+quarkus.oidc.tls.verification=none
 
 # Enable Policy Enforcement
 quarkus.keycloak.policy-enforcer.enable=true</code></pre>
@@ -368,11 +372,11 @@ By default, applications using the <code>quarkus-oidc</code> extension are marke
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 {keycloak-docker-image}</code></pre>
+<pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">docker run --name keycloak -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin -p 8180:8080 -p 8543:8443 {keycloak-docker-image}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You should be able to access your Keycloak Server at <a href="http://localhost:8180/auth">localhost:8180/auth</a>.</p>
+<p>You should be able to access your Keycloak Server at <a href="http://localhost:8180/auth">localhost:8180/auth</a> or <a href="https://localhost:8543/auth">localhost:8543/auth</a>.</p>
 </div>
 <div class="paragraph">
 <p>Log in as the <code>admin</code> user to access the Keycloak Administration Console.
@@ -451,7 +455,7 @@ For more details, see the Keycloak documentation about how to <a href="https://w
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export access_token=$(\
-    curl -X POST http://localhost:8180/auth/realms/quarkus/protocol/openid-connect/token \
+    curl --insecure -X POST https://localhost:8543/auth/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=alice&amp;password=alice&amp;grant_type=password' | jq --raw-output '.access_token' \
@@ -490,7 +494,7 @@ If you try to access this endpoint with the previously issued access token, you 
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="bash" class="language-bash hljs">export access_token=$(\
-    curl -X POST http://localhost:8180/auth/realms/quarkus/protocol/openid-connect/token \
+    curl --insecure -X POST https://localhost:8543/auth/realms/quarkus/protocol/openid-connect/token \
     --user backend-service:secret \
     -H 'content-type: application/x-www-form-urlencoded' \
     -d 'username=admin&amp;password=admin&amp;grant_type=password' | jq --raw-output '.access_token' \

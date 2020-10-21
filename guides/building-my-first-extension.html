@@ -391,7 +391,7 @@ So, the more code you run during the two phases above, the faster your applicati
         &lt;dependencies&gt;
             &lt;dependency&gt;
                 &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
-                &lt;artifactId&gt;quarkus-bom-deployment&lt;/artifactId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
+                &lt;artifactId&gt;quarkus-bom&lt;/artifactId&gt; <i class="conum" data-value="2"></i><b>(2)</b>
                 &lt;version&gt;${quarkus.version}&lt;/version&gt;
                 &lt;type&gt;pom&lt;/type&gt;
                 &lt;scope&gt;import&lt;/scope&gt;
@@ -420,7 +420,7 @@ So, the more code you run during the two phases above, the faster your applicati
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>quarkus-bom-deployment</code> aligns your dependencies with those used by Quarkus during the augmentation phase.</td>
+<td>The <code>quarkus-bom</code> aligns your dependencies with those used by Quarkus during the augmentation phase.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -649,7 +649,7 @@ To do so, our extension will deploy, in the user application, a Servlet exposing
 </div>
 <div class="paragraph">
 <p>To use Servlets in your applications you need to have a Servlet Container such as <a href="http://undertow.io">Undertow</a>.
-Luckily, <code>quarkus-bom-deployment</code> imported by our parent <code>pom.xml</code> already includes the Undertow Quarkus extension.
+Luckily, <code>quarkus-bom</code> imported by our parent <code>pom.xml</code> already includes the Undertow Quarkus extension.
 All we need to do is add</p>
 </div>
 <div class="listingblock">
@@ -710,6 +710,14 @@ Thanks to basic concepts, you will describe the items to produce/consume and the
 </div>
 <div class="paragraph">
 <p>The <code>io.quarkus.builder.item.BuildItem</code> concept represents object instances you will produce or consume (and at some point convert into bytecode) thanks to methods annotated with <code>@io.quarkus.deployment.annotations.BuildStep</code> which describe your extension&#8217;s deployment tasks.</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">NOTE</dt>
+<dd>
+<p>See <a href="all-builditems">the complete list of BuildItem implementations in core</a> for more information</p>
+</dd>
+</dl>
 </div>
 <div class="paragraph">
 <p>Go back to the generated <code>org.acme.quarkus.greeting.deployment.GreetingProcessor</code> class.</p>

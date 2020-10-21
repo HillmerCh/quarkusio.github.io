@@ -998,6 +998,44 @@ and get them included in the source cache.</p>
 <div class="paragraph">
 <p>The location of source cache is <code>target/{project.name}-{project.version}-native-image-source-jar/sources</code> folder.</p>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>To load the sources in <code>gdb</code>, run:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">directory target/{project.name}-{project.version}-native-image-source-jar</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>in the <code>gdb</code> prompt.</p>
+</div>
+<div class="paragraph">
+<p>Or start <code>gdb</code> with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">gdb -ex 'directory target/{project.name}-{project.version}-native-image-source-jar' target/{project.name}-{project.version}-runner</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>e.g.,</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">gdb -ex 'directory target/getting-started-1.0-SNAPSHOT-native-image-source-jar' target/getting-started-1.0-SNAPSHOT-runner</code></pre>
+</div>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect1">

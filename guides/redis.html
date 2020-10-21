@@ -103,6 +103,11 @@
 <li><a href="#packaging-and-running-in-jvm-mode">Packaging and running in JVM mode</a></li>
 <li><a href="#running-native">Running Native</a></li>
 <li><a href="#connection-health-check">Connection Health Check</a></li>
+<li><a href="#multiple-redis-clients">Multiple Redis Clients</a>
+<ul class="sectlevel2">
+<li><a href="#named-redis-client-injection">Named Redis client Injection</a></li>
+</ul>
+</li>
 <li><a href="#configuration-reference">Configuration Reference</a></li>
 </ul></div>
     <div>
@@ -255,7 +260,7 @@ This is done in the <code>application.properties</code> configuration file. Edit
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">quarkus.redis.hosts=localhost:6379 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">quarkus.redis.hosts=redis://localhost:6379 <i class="conum" data-value="1"></i><b>(1)</b></code></pre>
 </div>
 </div>
 <div class="olist arabic">
@@ -824,6 +829,47 @@ to validate the connection to the Redis server.</p>
 </div>
 </div>
 <div class="sect1">
+<h2 id="multiple-redis-clients"><a class="anchor" href="#multiple-redis-clients"></a>Multiple Redis Clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Redis extension allows you to configure multiple clients.
+Using several clients works the same way as having a single client.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">quarkus.redis.hosts=redis://localhost:6379
+quarkus.redis.second.hosts=redis://localhost:6379</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice there&#8217;s an extra bit in the key (the <code>second</code> segment).
+The syntax is as follows: <code>quarkus.redis.[optional name.][redis configuration property]</code>.
+If the name is omitted, it configures the default client.</p>
+</div>
+<div class="sect2">
+<h3 id="named-redis-client-injection"><a class="anchor" href="#named-redis-client-injection"></a>Named Redis client Injection</h3>
+<div class="paragraph">
+<p>When using multiple clients, you can select the client to inject using the <code>io.quarkus.redis.client.RedisClientName</code> qualifier.
+Using the above properties to configure three different clients, you can also inject each one as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Inject
+RedisClient defaultRedisClient;
+
+@Inject
+@RedisClientName("second")
+RedisClient redisClient2;
+
+@Inject
+@RedisClientName("second")
+ReactiveRedisClient reactiveClient2;</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="configuration-reference"><a class="anchor" href="#configuration-reference"></a>Configuration Reference</h2>
 <div class="sectionbody">
 <div class="paragraph configuration-legend">
@@ -857,45 +903,18 @@ to validate the connection to the Redis server.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-redis-client_quarkus.redis.password"></a><code><a href="#quarkus-redis-client_quarkus.redis.password">quarkus.redis.password</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>The redis password</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
-<td class="tableblock halign-left valign-middle"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><a id="quarkus-redis-client_quarkus.redis.hosts"></a><code><a href="#quarkus-redis-client_quarkus.redis.hosts">quarkus.redis.hosts</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>The redis hosts</p>
+<p>The redis hosts to use while connecting to the redis server. Only the cluster mode will consider more than 1 element.
+ The URI provided uses the following schema <code>redis://[username:password@][host][:port][/database]</code></p>
 </div>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">list of host:port</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>localhost:6379</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-redis-client_quarkus.redis.database"></a><code><a href="#quarkus-redis-client_quarkus.redis.database">quarkus.redis.database</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>The redis database</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>0</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">list of <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>redis://localhost:6379</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -914,20 +933,6 @@ to validate the connection to the Redis server.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-redis-client_quarkus.redis.ssl"></a><code><a href="#quarkus-redis-client_quarkus.redis.ssl">quarkus.redis.ssl</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>Enables or disables the SSL on connect.</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>false</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><a id="quarkus-redis-client_quarkus.redis.client-type"></a><code><a href="#quarkus-redis-client_quarkus.redis.client-type">quarkus.redis.client-type</a></code></p>
 </div>
 <div class="openblock description">
@@ -939,6 +944,48 @@ to validate the connection to the Redis server.</p>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>standalone</code>, <code>sentinel</code>, <code>cluster</code></p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>standalone</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.master-name"></a><code><a href="#quarkus-redis-client_quarkus.redis.master-name">quarkus.redis.master-name</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The master name (only considered in HA mode).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>mymaster</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.role"></a><code><a href="#quarkus-redis-client_quarkus.redis.role">quarkus.redis.role</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The role name (only considered in HA mode).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>master</code>, <code>slave</code>, <code>sentinel</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>master</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.slaves"></a><code><a href="#quarkus-redis-client_quarkus.redis.slaves">quarkus.redis.slaves</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Whether or not to use slave nodes (only considered in Cluster mode).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>never</code>, <code>share</code>, <code>always</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>never</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -998,6 +1045,209 @@ to validate the connection to the Redis server.</p>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
   <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>15S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.max-waiting-handlers"></a><code><a href="#quarkus-redis-client_quarkus.redis.max-waiting-handlers">quarkus.redis.max-waiting-handlers</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Sets how much handlers is the client willing to queue.
+ The client will always work on pipeline mode, this means that messages can start queueing. Using this configuration option, you can control how much backlog you&#8217;re willing to accept.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>2048</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.max-nested-arrays"></a><code><a href="#quarkus-redis-client_quarkus.redis.max-nested-arrays">quarkus.redis.max-nested-arrays</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Tune how much nested arrays are allowed on a redis response. This affects the parser performance.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>32</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.hosts"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.hosts">quarkus.redis."additional-redis-clients".hosts</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The redis hosts to use while connecting to the redis server. Only the cluster mode will consider more than 1 element.
+ The URI provided uses the following schema <code>redis://[username:password@][host][:port][/database]</code></p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">list of <a href="https://docs.oracle.com/javase/8/docs/api/java/net/URI.html">URI</a></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>redis://localhost:6379</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.timeout"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.timeout">quarkus.redis."additional-redis-clients".timeout</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The maximum delay to wait before a blocking command to redis server times out</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>10s</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.client-type"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.client-type">quarkus.redis."additional-redis-clients".client-type</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The redis client type</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>standalone</code>, <code>sentinel</code>, <code>cluster</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>standalone</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.master-name"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.master-name">quarkus.redis."additional-redis-clients".master-name</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The master name (only considered in HA mode).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>mymaster</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.role"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.role">quarkus.redis."additional-redis-clients".role</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The role name (only considered in HA mode).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>master</code>, <code>slave</code>, <code>sentinel</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>master</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.slaves"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.slaves">quarkus.redis."additional-redis-clients".slaves</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Whether or not to use slave nodes (only considered in Cluster mode).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>never</code>, <code>share</code>, <code>always</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>never</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-pool-size"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-pool-size">quarkus.redis."additional-redis-clients".max-pool-size</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The maximum size of the connection pool. When working with cluster or sentinel.
+ This value should be at least the total number of cluster member (or number of sentinels &#43; 1)</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>6</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-pool-waiting"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-pool-waiting">quarkus.redis."additional-redis-clients".max-pool-waiting</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The maximum waiting requests for a connection from the pool.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>24</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.pool-cleaner-interval"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.pool-cleaner-interval">quarkus.redis."additional-redis-clients".pool-cleaner-interval</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The duration indicating how often should the connection pool cleaner executes.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.pool-recycle-timeout"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.pool-recycle-timeout">quarkus.redis."additional-redis-clients".pool-recycle-timeout</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The timeout for a connection recycling.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>15S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-waiting-handlers"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-waiting-handlers">quarkus.redis."additional-redis-clients".max-waiting-handlers</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Sets how much handlers is the client willing to queue.
+ The client will always work on pipeline mode, this means that messages can start queueing. Using this configuration option, you can control how much backlog you&#8217;re willing to accept.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>2048</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-nested-arrays"></a><code><a href="#quarkus-redis-client_quarkus.redis.-additional-redis-clients-.max-nested-arrays">quarkus.redis."additional-redis-clients".max-nested-arrays</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Tune how much nested arrays are allowed on a redis response. This affects the parser performance.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>32</code></p></td>
 </tr>
 </tbody>
 </table>

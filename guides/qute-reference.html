@@ -80,26 +80,29 @@
   <div class="width-12-12">
     <h1 class="text-caps">Quarkus - Qute Reference Guide</h1>
     <div class="hide-mobile toc"><ul class="sectlevel1">
-<li><a href="#hello-world-example">1. Hello World Example</a></li>
-<li><a href="#core-features">2. Core Features</a>
+<li><a href="#hello_world_example">1. Hello World Example</a></li>
+<li><a href="#core_features">2. Core Features</a>
 <ul class="sectlevel2">
-<li><a href="#syntax-and-building-blocks">2.1. Syntax and Building Blocks</a></li>
+<li><a href="#basic-building-blocks">2.1. Basic Building Blocks</a></li>
 <li><a href="#identifiers">2.2. Identifiers and Tags</a></li>
 <li><a href="#removing-standalone-lines-from-the-template">2.3. Removing Standalone Lines From the Template</a></li>
-<li><a href="#engine-configuration">2.4. Engine Configuration</a></li>
+<li><a href="#expressions">2.4. Expressions</a></li>
+<li><a href="#sections">2.5. Sections</a></li>
+<li><a href="#engine-configuration">2.6. Engine Configuration</a></li>
 </ul>
 </li>
 <li><a href="#quarkus_integration">3. Quarkus Integration</a>
 <ul class="sectlevel2">
 <li><a href="#template-variants">3.1. Template Variants</a></li>
 <li><a href="#injecting-beans-directly-in-templates">3.2. Injecting Beans Directly In Templates</a></li>
-<li><a href="#parameter_declarations">3.3. Parameter Declarations</a></li>
-<li><a href="#template_extension_methods">3.4. Template Extension Methods</a></li>
-<li><a href="#template_data">3.5. @TemplateData</a></li>
-<li><a href="#resteasy_integration">3.6. RESTEasy Integration</a></li>
-<li><a href="#development-mode">3.7. Development Mode</a></li>
-<li><a href="#type-safe-message-bundles">3.8. Type-safe Message Bundles</a></li>
-<li><a href="#configuration-reference">3.9. Configuration Reference</a></li>
+<li><a href="#typesafe_expressions">3.3. Type-safe Expressions</a></li>
+<li><a href="#typesafe_templates">3.4. Type-safe Templates</a></li>
+<li><a href="#template_extension_methods">3.5. Template Extension Methods</a></li>
+<li><a href="#template_data">3.6. @TemplateData</a></li>
+<li><a href="#resteasy_integration">3.7. RESTEasy Integration</a></li>
+<li><a href="#development-mode">3.8. Development Mode</a></li>
+<li><a href="#type-safe-message-bundles">3.9. Type-safe Message Bundles</a></li>
+<li><a href="#configuration-reference">3.10. Configuration Reference</a></li>
 </ul>
 </li>
 </ul></div>
@@ -128,10 +131,18 @@ Feedback is welcome on our <a href="https://groups.google.com/d/forum/quarkus-de
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Qute is a templating engine designed specifically to meet the Quarkus needs.
+The usage of reflection is minimized to reduce the size of native images.
+The API combines both the imperative and the non-blocking reactive style of coding.
+In the development mode, all files located in the <code>src/main/resources/templates</code> folder are watched for changes and modifications are immediately visible in your application.
+Furthermore, Qute attempts to detect most of the template problems at build time and fail fast.
+In this guide, you will find an <a href="#hello_world_example">introductory example</a>, the description of the <a href="#core_features">core features</a> and <a href="#quarkus_integration">Quarkus integration</a> details.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="hello-world-example"><a class="anchor" href="#hello-world-example"></a>1. Hello World Example</h2>
+<h2 id="hello_world_example"><a class="anchor" href="#hello_world_example"></a>1. Hello World Example</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In this example, we&#8217;d like to demonstrate the basic workflow when working with Qute templates.
@@ -181,7 +192,7 @@ In Quarkus, there is a preconfigured <code>Engine</code> available for injection
 </table>
 </div>
 <div class="paragraph">
-<p>If we have an <code>Engine</code> instance we could parse the template contents:</p>
+<p>Once we have an <code>Engine</code> instance we could parse the template contents:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -236,8 +247,59 @@ helloTemplate.data("name", "Jim").render(); <i class="conum" data-value="1"></i>
 </li>
 </ol>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+The <code>Engine</code> is able to cache the definitions so that it&#8217;s not necessary to parse the contents again and again. In Quarkus, the caching is done automatically.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="core_features"><a class="anchor" href="#core_features"></a>2. Core Features</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="basic-building-blocks"><a class="anchor" href="#basic-building-blocks"></a>2.1. Basic Building Blocks</h3>
 <div class="paragraph">
-<p>The <code>Engine</code> is able to cache the definitions so that it&#8217;s not necessary to parse the contents again and again.</p>
+<p>The dynamic parts of a template include comments, expressions, sections and unparsed character data.</p>
+</div>
+<div class="sect3">
+<h4 id="comments"><a class="anchor" href="#comments"></a>2.1.1. Comments</h4>
+<div class="paragraph">
+<p>A comment starts with <code>{!</code> and ends with <code>!}</code>, e.g. <code>{! This is a comment !}</code>.
+It could be multi-line and may contain expressions and sections: <code>{! {#if true} !}</code>.
+Of course, the content of a comment is completely ignored.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="blocks_expressions"><a class="anchor" href="#blocks_expressions"></a>2.1.2. Expressions</h4>
+<div class="paragraph">
+<p>An <a href="#expressions">expression</a> outputs an evaluated value.
+It consists of one or more parts.
+A part may represent simple properties: <code>{foo}</code>, <code>{item.name}</code> or virtual methods: <code>{item.get(name)}</code>, <code>{name ?: 'John'}</code>.
+An expression may start with a namespace: <code>{inject:colors}</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="blocks_sections"><a class="anchor" href="#blocks_sections"></a>2.1.3. Sections</h4>
+<div class="paragraph">
+<p>A <a href="#sections">section</a> may contain text, expressions and nested sections: <code>{#if foo}{foo.name}{/if}</code>.
+The name in the closing tag is optional: <code>{#if active}ACTIVE!{/}</code>.
+It can be empty: <code>{#myTag image=true /}</code>.
+A section may declare nested section blocks: <code>{#if item.valid} Valid. {#else} Invalid. {/if}</code> and decide which block to render.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="unparsed-character-data"><a class="anchor" href="#unparsed-character-data"></a>2.1.4. Unparsed Character Data</h4>
+<div class="paragraph">
+<p>It is used to mark the content that should be rendered but not parsed.
+It starts with <code>{|</code> and ends with <code>|}</code>: <code>{| &lt;script&gt;if(true){alert('Qute is cute!')};&lt;/script&gt; |}</code>, and could be multi-line.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -246,94 +308,11 @@ helloTemplate.data("name", "Jim").render(); <i class="conum" data-value="1"></i>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In Quarkus, the caching is done automatically.
+Previously, unparsed character data had to start with <code>{[</code> and end with <code>]}</code>. This syntax is still supported but we encourage users to switch to the new syntax to avoid some common collisions with constructs from other languages.
 </td>
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="core-features"><a class="anchor" href="#core-features"></a>2. Core Features</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="syntax-and-building-blocks"><a class="anchor" href="#syntax-and-building-blocks"></a>2.1. Syntax and Building Blocks</h3>
-<div class="paragraph">
-<p>The dynamic parts of a template include:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Comment</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Starts with <code>{!</code> and ends with <code>!}</code>:  <code>{! This is a comment !}</code>,</p>
-</li>
-<li>
-<p>Could be multi-line,</p>
-</li>
-<li>
-<p>May contain expressions and sections: <code>{! {#if true} !}</code>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Expression</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Outputs the evaluated value,</p>
-</li>
-<li>
-<p>Simple properties: <code>{foo}</code>, <code>{item.name}</code>,</p>
-</li>
-<li>
-<p>Virtual methods: <code>{item.get(name)}</code>, <code>{name ?: 'John'}</code>,</p>
-</li>
-<li>
-<p>With namespace: <code>{inject:colors}</code>.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Section</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>May contain expressions and nested sections: <code>{#if foo}{foo.name}{/if}</code>,</p>
-</li>
-<li>
-<p>The name in the closing tag is optional: <code>{#if active}ACTIVE!{/}</code>,</p>
-</li>
-<li>
-<p>Can be empty: <code>{#myTag image=true /}</code>,</p>
-</li>
-<li>
-<p>May declare nested section blocks: <code>{#if item.valid} Valid. {#else} Invalid. {/if}</code> and decide which block to render.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Unparsed Character Data</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Starts with <code>{[</code> and ends with <code>]}</code>: <code>{[ &lt;script&gt;if(true){alert('Qute is cute!')};&lt;/script&gt; ]}</code>,</p>
-</li>
-<li>
-<p>Could be multi-line,</p>
-</li>
-<li>
-<p>Used to mark the content that should be rendered but not parsed.</p>
-</li>
-</ul>
-</div>
-</li>
-</ul>
 </div>
 </div>
 <div class="sect2">
@@ -433,7 +412,7 @@ It is also possible to use escape sequences <code>\{</code> and <code>\}</code> 
 <div class="sect2">
 <h3 id="removing-standalone-lines-from-the-template"><a class="anchor" href="#removing-standalone-lines-from-the-template"></a>2.3. Removing Standalone Lines From the Template</h3>
 <div class="paragraph">
-<p>By default, Qute parser removes standalone lines from the template output.
+<p>By default, the parser removes standalone lines from the template output.
 A <strong>standalone line</strong> is a line that contains at least one section tag (e.g. <code>{#each}</code> and <code>{/each}</code>), parameter declaration (e.g. <code>{@org.acme.Foo foo}</code>) or comment but no expression and no non-whitespace character.
 In other words, a line that contains no section tag or a parameter declaration is <strong>not</strong> a standalone line.
 Likewise, a line that contains an <em>expression</em> or a <em>non-whitespace character</em> is <strong>not</strong> a standalone line.</p>
@@ -486,9 +465,18 @@ Likewise, a line that contains an <em>expression</em> or a <em>non-whitespace ch
 &lt;/html&gt;</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The default behavior can be disabled by setting the property <code>quarkus.qute.remove-standalone-lines</code> to <code>false</code>.
-In this case, all whitespace characters from a standalone line will be printed to the output.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+In Quarkus, the default behavior can be disabled by setting the property <code>quarkus.qute.remove-standalone-lines</code> to <code>false</code>.
+In this case, all whitespace characters from a standalone line will be printed to the output.
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="title">Output with <code>quarkus.qute.remove-standalone-lines=false</code></div>
@@ -505,13 +493,14 @@ In this case, all whitespace characters from a standalone line will be printed t
 &lt;/html&gt;</code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="expressions"><a class="anchor" href="#expressions"></a>2.3.1. Expressions</h4>
+</div>
+<div class="sect2">
+<h3 id="expressions"><a class="anchor" href="#expressions"></a>2.4. Expressions</h3>
 <div class="paragraph">
 <p>An expression outputs a value.
 It consists of one or more parts separated by dot (dot notation) or square brackets (bracket notation).
-In the <code>object.property</code> (dot notation) syntax, the <code>property</code> must be a <a href="#identifiers">valid identifier&gt;.
-In the <code>object[property_name]</code> (bracket notation) syntax, the <code>property_name</code> has to be a non-null &lt;&lt;literals, literal</a> value.
+In the <code>object.property</code> (dot notation) syntax, the <code>property</code> must be a <a href="#identifiers">valid identifier</a>.
+In the <code>object[property_name]</code> (bracket notation) syntax, the <code>property_name</code> has to be a non-null <a href="#literals">literal</a> value.
 An expression could start with an optional namespace followed by a colon (<code>:</code>).</p>
 </div>
 <div class="listingblock">
@@ -545,7 +534,8 @@ An expression could start with an optional namespace followed by a colon (<code>
 </div>
 <div class="paragraph">
 <p>A part of an expression could be a <em>virtual method</em> in which case the name can be followed by a list of comma-separated parameters in parentheses.
-A parameter of a virtual method can be either a nested expression or a <a href="#literals">literal</a> value.</p>
+A parameter of a virtual method can be either a nested expression or a <a href="#literals">literal</a> value.
+We call it "virtual" because it does not have to be backed by a real Java method.</p>
 </div>
 <div class="listingblock">
 <div class="title">Virtual Methods Example</div>
@@ -562,12 +552,12 @@ A parameter of a virtual method can be either a nested expression or a <a href="
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>infix notation, translated to <code>name.or('John')</code>; no namespace, two parts - <code>name</code>, <code>or('John')</code></td>
+<td>infix notation that can be used for virtual methods with single parameter, translated to <code>name.or('John')</code>; no namespace, two parts - <code>name</code>, <code>or('John')</code></td>
 </tr>
 </table>
 </div>
-<div class="sect4">
-<h5 id="literals"><a class="anchor" href="#literals"></a>2.3.1.1. Supported Literals</h5>
+<div class="sect3">
+<h4 id="literals"><a class="anchor" href="#literals"></a>2.4.1. Supported Literals</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
@@ -611,14 +601,14 @@ A parameter of a virtual method can be either a nested expression or a <a href="
 </tbody>
 </table>
 </div>
-<div class="sect4">
-<h5 id="resolution"><a class="anchor" href="#resolution"></a>2.3.1.2. Resolution</h5>
+<div class="sect3">
+<h4 id="resolution"><a class="anchor" href="#resolution"></a>2.4.2. Resolution</h4>
 <div class="paragraph">
 <p>The first part of the expression is always resolved against the <a href="#current_context_object">current context object</a>.
 If no result is found for the first part it&#8217;s resolved against the parent context object (if available).
 For an expression that starts with a namespace the current context object is found using all the available <code>NamespaceResolver</code>s.
 For an expression that does not start with a namespace the current context object is <strong>derived from the position</strong> of the tag.
-All other parts are resolved using <code>ValueResolver</code>s against the result of the previous resolution.</p>
+All other parts of an expression are resolved using all <code>ValueResolver</code>s against the result of the previous resolution.</p>
 </div>
 <div class="paragraph">
 <p>For example, expression <code>{name}</code> has no namespace and single part - <code>name</code>.
@@ -626,39 +616,6 @@ The "name" will be resolved using all available value resolvers against the curr
 However, the expression <code>{global:colors}</code> has the namespace <code>global</code> and single part - <code>colors</code>.
 First, all available <code>NamespaceResolver</code>s will be used to find the current context object.
 And afterwards value resolvers will be used to resolve "colors" against the context object found.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="current_context_object"><a class="anchor" href="#current_context_object"></a>2.3.1.3. Current Context</h5>
-<div class="paragraph">
-<p>If an expression does not specify a namespace the current context object is derived from the position of the tag.
-By default, the current context object represents the data passed to the template instance.
-However, sections may change the current context object.
-A typical example is the for/each loop - during iteration the content of the section is rendered with each element as the current context object:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">{#each items}
-  {count}. {it.name} <i class="conum" data-value="1"></i><b>(1)</b>
-{/each}
-
-{! Another form of iteration... !}
-{#for item in items}
-  {count}. {item.name} <i class="conum" data-value="2"></i><b>(2)</b>
-{/for}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>it</code> is an implicit alias. <code>name</code> is resolved against the current iteration element.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Loop with an explicit alias <code>item</code>.</td>
-</tr>
-</table>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -712,8 +669,64 @@ This could be useful to access data for which the key is overridden:</p>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="built-in-operators"><a class="anchor" href="#built-in-operators"></a>2.3.1.4. Built-in Operators</h5>
+<div class="sect3">
+<h4 id="current_context_object"><a class="anchor" href="#current_context_object"></a>2.4.3. Current Context</h4>
+<div class="paragraph">
+<p>If an expression does not specify a namespace the <em>current context object</em> is derived from the position of the tag.
+By default, the current context object represents the data passed to the template instance.
+However, sections may change the current context object.
+A typical example is the <code>with</code> section that could be used to set the current context object in order to simplify the template structure:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="html" class="language-html hljs">{#with item}
+  &lt;h1&gt;{name}&lt;/h1&gt;  <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;p&gt;{description}&lt;/p&gt;
+{/with}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>name</code> is resolved against the <code>item</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Another built-in section that modifies the current context object is <code>let</code>/<code>set</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="html" class="language-html hljs">{#let myParent=order.item.parent myPrice=order.price} <i class="conum" data-value="1"></i><b>(1)</b>
+  &lt;h1&gt;{myParent.name}&lt;/h1&gt;
+  &lt;p&gt;Price: {myPrice}&lt;/p&gt;
+{/let}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The current context object inside the section is the map of resolved parameters.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The current context can be accessed via the implicit binding <code>this</code>.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="built-in-operators"><a class="anchor" href="#built-in-operators"></a>2.4.4. Built-in Operators</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -737,6 +750,16 @@ This could be useful to access data for which the key is overridden:</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Ternary</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Shorthand for if-then-else statement. Unlike in <a href="#if_section">If Section</a> nested operators are not supported.</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{item.isActive ? item.name : 'Inactive item'}</code> outputs the value of <code>item.name</code> if <code>item.isActive</code> resolves to <code>true</code>.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logical AND</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs <code>true</code> if both parts are not <code>falsy</code> as described in the <a href="#if_section">If Section</a>. The parameter is only evaluated if needed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{person.isActive &amp;&amp; person.hasStyle}</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Logical OR</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Outputs <code>true</code> if any of the parts is not <code>falsy</code> as described in the <a href="#if_section">If Section</a>. The parameter is only evaluated if needed.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">`{person.isActive</p></td>
 </tr>
 </tbody>
 </table>
@@ -765,11 +788,25 @@ In fact, the operators are implemented as "virtual methods" that consume one par
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="character-escapes"><a class="anchor" href="#character-escapes"></a>2.3.1.5. Character Escapes</h5>
+<div class="sect3">
+<h4 id="character-escapes"><a class="anchor" href="#character-escapes"></a>2.4.5. Character Escapes</h4>
 <div class="paragraph">
-<p>For HTML and XML templates the <code>'</code>, <code>"</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code> characters are escaped by default.
-If you need to render the unescaped value:</p>
+<p>For HTML and XML templates the <code>'</code>, <code>"</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code> characters are escaped by default if a template variant is set.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In Quarkus, a variant is set automatically for templates located in the <code>src/main/resources/templates</code>. By default, the <code>java.net.URLConnection#getFileNameMap()</code> is used to determine the content type of a template file. The additional map of suffixes to content types can be set via <code>quarkus.qute.content-types</code>.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>If you need to render the unescaped value:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -802,8 +839,8 @@ If you need to render the unescaped value:</p>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="virtual-methods"><a class="anchor" href="#virtual-methods"></a>2.3.1.6. Virtual Methods</h5>
+<div class="sect3">
+<h4 id="virtual-methods"><a class="anchor" href="#virtual-methods"></a>2.4.6. Virtual Methods</h4>
 <div class="paragraph">
 <p>A virtual method is a <strong>part of an expression</strong> that looks like a regular Java method invocation.
 It&#8217;s called "virtual" because it does not have to match the actual method of a Java class.
@@ -887,8 +924,8 @@ Virtual methods are usually evaluated by value resolvers generated for <a href="
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="sections"><a class="anchor" href="#sections"></a>2.3.2. Sections</h4>
+<div class="sect2">
+<h3 id="sections"><a class="anchor" href="#sections"></a>2.5. Sections</h3>
 <div class="paragraph">
 <p>A section:</p>
 </div>
@@ -945,8 +982,8 @@ A section helper that defines the logic of a section can "execute" any of the bl
 {/if}</code></pre>
 </div>
 </div>
-<div class="sect4">
-<h5 id="loop-section"><a class="anchor" href="#loop-section"></a>2.3.2.1. Loop Section</h5>
+<div class="sect3">
+<h4 id="loop-section"><a class="anchor" href="#loop-section"></a>2.5.1. Loop Section</h4>
 <div class="paragraph">
 <p>The loop section makes it possible to iterate over an instance of <code>Iterable</code>, <code>Map</code> 's entry set, <code>Stream</code> and an Integer.
 It has two flavors.
@@ -1014,8 +1051,8 @@ The first one is using the <code>each</code> name alias.</p>
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="if_section"><a class="anchor" href="#if_section"></a>2.3.2.2. If Section</h5>
+<div class="sect3">
+<h4 id="if_section"><a class="anchor" href="#if_section"></a>2.5.2. If Section</h4>
 <div class="paragraph">
 <p>The <code>if</code> section represents a basic control flow section.
 The simplest possible version accepts a single parameter and renders the content if the condition is evaluated to <code>true</code>.
@@ -1139,8 +1176,8 @@ A condition without an operator evaluates to <code>true</code> if the value is n
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="with-section"><a class="anchor" href="#with-section"></a>2.3.2.3. With Section</h5>
+<div class="sect3">
+<h4 id="with_section"><a class="anchor" href="#with_section"></a>2.5.3. With Section</h4>
 <div class="paragraph">
 <p>This section can be used to set the current context object.
 This could be useful to simplify the template structure:</p>
@@ -1188,8 +1225,8 @@ This could be useful to simplify the template structure:</p>
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="letset-section"><a class="anchor" href="#letset-section"></a>2.3.2.4. Let/Set Section</h5>
+<div class="sect3">
+<h4 id="letset-section"><a class="anchor" href="#letset-section"></a>2.5.4. Let/Set Section</h4>
 <div class="paragraph">
 <p>This section allows you to define named local variables:</p>
 </div>
@@ -1212,8 +1249,8 @@ This could be useful to simplify the template structure:</p>
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="include_helper"><a class="anchor" href="#include_helper"></a>2.3.2.5. Include Section</h5>
+<div class="sect3">
+<h4 id="include_helper"><a class="anchor" href="#include_helper"></a>2.5.5. Include Section</h4>
 <div class="paragraph">
 <p>This section can be used to include another template and possibly override some parts of the template (template inheritance).</p>
 </div>
@@ -1310,8 +1347,8 @@ Section blocks can also define an optional end tag - <code>{/title}</code>.
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="user_tags"><a class="anchor" href="#user_tags"></a>2.3.2.6. User-defined Tags</h5>
+<div class="sect3">
+<h4 id="user_tags"><a class="anchor" href="#user_tags"></a>2.5.6. User-defined Tags</h4>
 <div class="paragraph">
 <p>User-defined tags can be used to include a template and optionally pass some parameters.
 Let&#8217;s suppose we have a template called <code>itemDetail.html</code>:</p>
@@ -1392,11 +1429,10 @@ In Quarkus, all files from the <code>src/main/resources/templates/tags</code> ar
 </div>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="engine-configuration"><a class="anchor" href="#engine-configuration"></a>2.4. Engine Configuration</h3>
+<h3 id="engine-configuration"><a class="anchor" href="#engine-configuration"></a>2.6. Engine Configuration</h3>
 <div class="sect3">
-<h4 id="template-locator"><a class="anchor" href="#template-locator"></a>2.4.1. Template Locator</h4>
+<h4 id="template-locator"><a class="anchor" href="#template-locator"></a>2.6.1. Template Locator</h4>
 <div class="paragraph">
 <p>Manual registration is sometimes handy but it&#8217;s also possible to register a template locator using <code>EngineBuilder.addLocator(Function&lt;String, Optional&lt;Reader&gt;&gt;)</code>.
 This locator is used whenever the <code>Engine.getTemplate()</code> method is called and the engine has no template for a given id stored in the cache.</p>
@@ -1541,13 +1577,21 @@ A <code>ValueResolver</code> is also generated for all beans annotated with <cod
 </div>
 </div>
 <div class="sect2">
-<h3 id="parameter_declarations"><a class="anchor" href="#parameter_declarations"></a>3.3. Parameter Declarations</h3>
+<h3 id="typesafe_expressions"><a class="anchor" href="#typesafe_expressions"></a>3.3. Type-safe Expressions</h3>
 <div class="paragraph">
-<p>It is possible to specify optional parameter declarations in a template.
-Quarkus attempts to validate all expressions that reference such parameters.
-If an invalid/incorrect expression is found the build fails.</p>
+<p>Template expressions can be optionally type-safe.
+Which means that an expression is validated against the existing Java types and template extension methods.
+If an invalid/incorrect expression is found then the build fails.</p>
+</div>
+<div class="paragraph">
+<p>For example, if there is an expression <code>item.name</code> where <code>item</code> maps to <code>org.acme.Item</code> then <code>Item</code> must have a property <code>name</code> or a matching template extension method must exist.</p>
+</div>
+<div class="paragraph">
+<p>An optional <em>parameter declaration</em> is used to bind a Java type to expressions whose first part matches the parameter name.
+Parameter declarations are specified directly in a template.</p>
 </div>
 <div class="listingblock">
+<div class="title">Parameter Declaration Example</div>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="html" class="language-html hljs">{@org.acme.Foo foo} <i class="conum" data-value="1"></i><b>(1)</b>
 &lt;!DOCTYPE html&gt;
@@ -1558,7 +1602,7 @@ If an invalid/incorrect expression is found the build fails.</p>
 &lt;/head&gt;
 &lt;body&gt;
   &lt;h1&gt;{title}&lt;/h1&gt; <i class="conum" data-value="2"></i><b>(2)</b>
-  Hello {foo.message}! <i class="conum" data-value="3"></i><b>(3)</b>
+  Hello {foo.message.toLowerCase}! <i class="conum" data-value="3"></i><b>(3)</b> <i class="conum" data-value="4"></i><b>(4)</b>
 &lt;/body&gt;
 &lt;/html&gt;</code></pre>
 </div>
@@ -1577,22 +1621,39 @@ If an invalid/incorrect expression is found the build fails.</p>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>This expression is validated. <code>org.acme.Foo</code> must have a property <code>message</code> or a matching template extension method must exist.</td>
 </tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Likewise, the Java type of the object resolved from <code>foo.message</code> must have a property <code>toLowerCase</code> or a matching template extension method must exist.</td>
+</tr>
 </table>
 </div>
-<div class="admonitionblock note">
+<div class="admonitionblock important">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-note" title="Note"></i>
+<i class="fa icon-important" title="Important"></i>
 </td>
 <td class="content">
-A value resolver is also generated for all types used in parameter declarations so that it&#8217;s possible to access its properties without reflection.
+A value resolver is automatically generated for all types used in parameter declarations so that it&#8217;s possible to access its properties without reflection.
 </td>
 </tr>
 </table>
 </div>
-<div class="sect3">
-<h4 id="overriding-parameter-declarations"><a class="anchor" href="#overriding-parameter-declarations"></a>3.3.1. Overriding Parameter Declarations</h4>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Method parameters of <a href="#typesafe_templates">type-safe templates</a> are automatically turned into parameter declarations.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that sections can override names that would otherwise match a parameter declaration:</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="html" class="language-html hljs">{@org.acme.Foo foo}
@@ -1624,16 +1685,141 @@ A value resolver is also generated for all types used in parameter declarations 
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="typesafe_templates"><a class="anchor" href="#typesafe_templates"></a>3.4. Type-safe Templates</h3>
+<div class="paragraph">
+<p>You can also declare your templates in your Java code.
+If using <a href="#resteasy_integration">templates in JAX-RS resources</a>, you can rely on the following convention:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Organise your template files in the <code>/src/main/resources/templates</code> directory, by grouping them into one directory per resource class. So, if
+your <code>ItemResource</code> class references two templates <code>hello</code> and <code>goodbye</code>, place them at <code>/src/main/resources/templates/ItemResource/hello.txt</code>
+and <code>/src/main/resources/templates/ItemResource/goodbye.txt</code>. Grouping templates per resource class makes it easier to navigate to them.</p>
+</li>
+<li>
+<p>In each of your resource class, declare a <code>@CheckedTemplate static class Template {}</code> class within your resource class.</p>
+</li>
+<li>
+<p>Declare one <code>public static native TemplateInstance method();</code> per template file for your resource.</p>
+</li>
+<li>
+<p>Use those static methods to build your template instances.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="title">ItemResource.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package org.acme.quarkus.sample;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+
+import io.quarkus.qute.TemplateInstance;
+import io.quarkus.qute.Template;
+import io.quarkus.qute.api.CheckedTemplate;
+
+@Path("item")
+public class ItemResource {
+
+    @CheckedTemplate
+    public static class Templates {
+        public static native TemplateInstance item(Item item); <i class="conum" data-value="1"></i><b>(1)</b> <i class="conum" data-value="2"></i><b>(2)</b>
+    }
+
+    @GET
+    @Path("{id}")
+    @Produces(MediaType.TEXT_HTML)
+    public TemplateInstance get(@PathParam("id") Integer id) {
+        return Templates.item(service.findItem(id)); <i class="conum" data-value="3"></i><b>(3)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Declare a method that gives us a <code>TemplateInstance</code> for <code>templates/ItemResource/item.html</code> and declare its <code>Item item</code> parameter so we can validate the template.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>item</code> parameter is automatically turned into a <a href="#parameter_declarations">parameter declaration</a> and so all expressions that reference this name will be validated.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Make the <code>Item</code> object accessible in the template.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>You can also declare a top-level Java class annotated with <code>@CheckedTemplate</code>:</p>
+</div>
+<div class="listingblock">
+<div class="title">Top-level checked templates</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package org.acme.quarkus.sample;
+
+import io.quarkus.qute.TemplateInstance;
+import io.quarkus.qute.Template;
+import io.quarkus.qute.api.CheckedTemplate;
+
+@CheckedTemplate
+public class Templates {
+    public static native TemplateInstance hello(String name); <i class="conum" data-value="1"></i><b>(1)</b>
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>This declares a template with path <code>templates/hello.txt</code>. The <code>name</code> parameter is automatically turned into a  <a href="#parameter_declarations">parameter declaration</a> and so all expressions that reference this name will be validated.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Then declare one <code>public static native TemplateInstance method();</code> per template file.
+Use those static methods to build your template instances:</p>
+</div>
+<div class="listingblock">
+<div class="title">HelloResource.java</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package org.acme.quarkus.sample;
+
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import io.quarkus.qute.TemplateInstance;
+
+@Path("hello")
+public class HelloResource {
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    public TemplateInstance get(@QueryParam("name") String name) {
+        return Templates.hello(name);
+    }
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="template_extension_methods"><a class="anchor" href="#template_extension_methods"></a>3.4. Template Extension Methods</h3>
+<h3 id="template_extension_methods"><a class="anchor" href="#template_extension_methods"></a>3.5. Template Extension Methods</h3>
 <div class="paragraph">
-<p>Extension methods can be used to extend the data classes with new functionality or resolve expressions for a specific <a href="#namespace_extension_methods">namespace</a>.
+<p>Extension methods can be used to extend the data classes with new functionality (to extend the set of accessible properties and methods) or to resolve expressions for a specific <a href="#namespace_extension_methods">namespace</a>.
 For example, it is possible to add <em>computed properties</em> and <em>virtual methods</em>.</p>
 </div>
 <div class="paragraph">
 <p>A value resolver is automatically generated for a method annotated with <code>@TemplateExtension</code>.
-If a  class is annotated with <code>@TemplateExtension</code> then a value resolver is generated for every non-private static method declared on the class.
+If a class is annotated with <code>@TemplateExtension</code> then a value resolver is generated for every <em>non-private static method</em> declared on the class.
 Method-level annotations override the behavior defined on the class.
 Methods that do not meet the following requirements are ignored.</p>
 </div>
@@ -1720,7 +1906,7 @@ class MyExtensions {
 </table>
 </div>
 <div class="sect3">
-<h4 id="method-parameters"><a class="anchor" href="#method-parameters"></a>3.4.1. Method Parameters</h4>
+<h4 id="method-parameters"><a class="anchor" href="#method-parameters"></a>3.5.1. Method Parameters</h4>
 <div class="paragraph">
 <p>An extension method may accept multiple parameters.
 If no namespace is specified the first parameter is always used to pass the base object, i.e. <code>org.acme.Item</code> in the first example.
@@ -1761,7 +1947,7 @@ class BigDecimalExtensions {
 </div>
 </div>
 <div class="sect3">
-<h4 id="namespace_extension_methods"><a class="anchor" href="#namespace_extension_methods"></a>3.4.2. Namespace Extension Methods</h4>
+<h4 id="namespace_extension_methods"><a class="anchor" href="#namespace_extension_methods"></a>3.5.2. Namespace Extension Methods</h4>
 <div class="paragraph">
 <p>If <code>TemplateExtension#namespace()</code> is specified then the extension method is used to resolve expressions with the given <a href="#expressions">namespace</a>.
 Template extension methods that share the same namespace are grouped in one resolver ordered by <code>TemplateExtension#priority()</code>.
@@ -1806,12 +1992,12 @@ public static class StringExtensions {
 </div>
 </div>
 <div class="sect3">
-<h4 id="built-in-template-extension"><a class="anchor" href="#built-in-template-extension"></a>3.4.3. Built-in Template Extension</h4>
+<h4 id="built-in-template-extension"><a class="anchor" href="#built-in-template-extension"></a>3.5.3. Built-in Template Extension</h4>
 <div class="paragraph">
 <p>Quarkus provides a set of built-in extension methods.</p>
 </div>
 <div class="sect4">
-<h5 id="maps"><a class="anchor" href="#maps"></a>3.4.3.1. Maps</h5>
+<h5 id="maps"><a class="anchor" href="#maps"></a>3.5.3.1. Maps</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1880,7 +2066,7 @@ A map value can be also accessed directly: <code>{map.myKey}</code>. Use the bra
 </div>
 </div>
 <div class="sect4">
-<h5 id="collections"><a class="anchor" href="#collections"></a>3.4.3.2. Collections</h5>
+<h5 id="collections"><a class="anchor" href="#collections"></a>3.5.3.2. Collections</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1909,7 +2095,7 @@ A list element can be accessed directly: <code>{list.10}</code> or <code>{list[1
 </div>
 </div>
 <div class="sect4">
-<h5 id="numbers"><a class="anchor" href="#numbers"></a>3.4.3.3. Numbers</h5>
+<h5 id="numbers"><a class="anchor" href="#numbers"></a>3.5.3.3. Numbers</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1926,7 +2112,7 @@ A list element can be accessed directly: <code>{list.10}</code> or <code>{list[1
 </div>
 </div>
 <div class="sect4">
-<h5 id="config"><a class="anchor" href="#config"></a>3.4.3.4. Config</h5>
+<h5 id="config"><a class="anchor" href="#config"></a>3.5.3.4. Config</h5>
 <div class="ulist">
 <ul>
 <li>
@@ -1952,10 +2138,77 @@ A list element can be accessed directly: <code>{list.10}</code> or <code>{list[1
 </ul>
 </div>
 </div>
+<div class="sect4">
+<h5 id="time"><a class="anchor" href="#time"></a>3.5.3.5. Time</h5>
+<div class="ulist">
+<ul>
+<li>
+<p><code>format(pattern)</code>: Formats temporal objects from the <code>java.time</code> package</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{dateTime.format('d MMM uuuu')}</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>format(pattern,locale)</code>: Formats temporal objects from the <code>java.time</code> package</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{dateTime.format('d MMM uuuu',myLocale)}</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>format(pattern,locale,timeZone)</code>: Formats temporal objects from the <code>java.time</code> package</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{dateTime.format('d MMM uuuu',myLocale,myTimeZoneId)}</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>time:format(dateTime,pattern)</code>: Formats temporal objects from the <code>java.time</code> package, <code>java.util.Date</code>, <code>java.util.Calendar</code> and <code>java.lang.Number</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{time:format(myDate,'d MMM uuuu')}</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>time:format(dateTime,pattern,locale)</code>: Formats temporal objects from the <code>java.time</code> package, <code>java.util.Date</code>, <code>java.util.Calendar</code> and <code>java.lang.Number</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{time:format(myDate,'d MMM uuuu', myLocale)}</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>time:format(dateTime,pattern,locale,timeZone)</code>: Formats temporal objects from the <code>java.time</code> package, <code>java.util.Date</code>, <code>java.util.Calendar</code> and <code>java.lang.Number</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>{time:format(myDate,'d MMM uuuu',myTimeZoneId)}</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="template_data"><a class="anchor" href="#template_data"></a>3.5. @TemplateData</h3>
+<h3 id="template_data"><a class="anchor" href="#template_data"></a>3.6. @TemplateData</h3>
 <div class="paragraph">
 <p>A value resolver is automatically generated for a type annotated with <code>@TemplateData</code>.
 This allows Quarkus to avoid using reflection to access the data at runtime.</p>
@@ -2044,7 +2297,7 @@ class Item {
 </div>
 </div>
 <div class="sect2">
-<h3 id="resteasy_integration"><a class="anchor" href="#resteasy_integration"></a>3.6. RESTEasy Integration</h3>
+<h3 id="resteasy_integration"><a class="anchor" href="#resteasy_integration"></a>3.7. RESTEasy Integration</h3>
 <div class="paragraph">
 <p>If you want to use Qute in your JAX-RS application, you&#8217;ll need to add the <code>quarkus-resteasy-qute</code> extension first.
 In your <code>pom.xml</code> file, add:</p>
@@ -2104,6 +2357,18 @@ public class HelloResource {
 </tr>
 </table>
 </div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+Users are encouraged to use <a href="#typesafe_templates">Type-safe templates</a> that help to organize the templates for a specific JAX-RS resource and enable <a href="#typesafe_expressions">type-safe expressions</a> automatically.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The content negotiation is performed automatically.
 The resulting output depends on the <code>Accept</code> header received from the client.</p>
@@ -2136,17 +2401,54 @@ class DetailResource {
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The <code>io.quarkus.resteasy.qute.RestTemplate</code> util class can be used to obtain a template instance from a body of a JAX-RS resource method:</p>
+</div>
+<div class="listingblock">
+<div class="title">RestTemplate Example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Path("/detail")
+class DetailResource {
+
+    @GET
+    @Produces({ MediaType.TEXT_HTML, MediaType.TEXT_PLAIN })
+    public TemplateInstance item() {
+        return RestTemplate.data("myItem", new Item("Alpha", 1000)); <i class="conum" data-value="1"></i><b>(1)</b>
+    }
+}</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The name of the template is derived from the resource class and method name; <code>DetailResource/item</code> in this particular case.</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Unlike with <code>@Inject</code> the templates obtained via <code>RestTemplate</code> are not validated, i.e. the build does not fail if a template does not exist.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
-<h3 id="development-mode"><a class="anchor" href="#development-mode"></a>3.7. Development Mode</h3>
+<h3 id="development-mode"><a class="anchor" href="#development-mode"></a>3.8. Development Mode</h3>
 <div class="paragraph">
 <p>In the development mode, all files located in <code>src/main/resources/templates</code> are watched for changes and modifications are immediately visible.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="type-safe-message-bundles"><a class="anchor" href="#type-safe-message-bundles"></a>3.8. Type-safe Message Bundles</h3>
+<h3 id="type-safe-message-bundles"><a class="anchor" href="#type-safe-message-bundles"></a>3.9. Type-safe Message Bundles</h3>
 <div class="sect3">
-<h4 id="basic-concepts"><a class="anchor" href="#basic-concepts"></a>3.8.1. Basic Concepts</h4>
+<h4 id="basic-concepts"><a class="anchor" href="#basic-concepts"></a>3.9.1. Basic Concepts</h4>
 <div class="paragraph">
 <p>The basic idea is that every message is potentially a very simple template.
 In order to prevent type errors a message is defined as an annotated method of a <strong>message bundle interface</strong>.
@@ -2224,7 +2526,7 @@ public interface AppMessages {
 </div>
 </div>
 <div class="sect3">
-<h4 id="bundle-name-and-message-keys"><a class="anchor" href="#bundle-name-and-message-keys"></a>3.8.2. Bundle Name and Message Keys</h4>
+<h4 id="bundle-name-and-message-keys"><a class="anchor" href="#bundle-name-and-message-keys"></a>3.9.2. Bundle Name and Message Keys</h4>
 <div class="paragraph">
 <p>Keys are used directly in templates.
 The bundle name is used as a namespace in template expressions.
@@ -2245,7 +2547,7 @@ Other possibilities are:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="validation"><a class="anchor" href="#validation"></a>3.8.3. Validation</h4>
+<h4 id="validation"><a class="anchor" href="#validation"></a>3.9.3. Validation</h4>
 <div class="ulist">
 <ul>
 <li>
@@ -2280,7 +2582,7 @@ A warning message is logged for each <em>unused</em> parameter.
 </div>
 </div>
 <div class="sect3">
-<h4 id="localization"><a class="anchor" href="#localization"></a>3.8.4. Localization</h4>
+<h4 id="localization"><a class="anchor" href="#localization"></a>3.9.4. Localization</h4>
 <div class="paragraph">
 <p>The default locale of the Java Virtual Machine used to <strong>build the application</strong> is used for the <code>@MessageBundle</code> interface by default.
 However, the <code>io.quarkus.qute.i18n.MessageBundle#locale()</code> can be used to specify a custom locale.
@@ -2315,7 +2617,7 @@ A localized interface is the preferred solution mainly due to the possibility of
 import io.quarkus.qute.i18n.Message;
 
 @Localized("de") <i class="conum" data-value="1"></i><b>(1)</b>
-public interface GermanAppMessages {
+public interface GermanAppMessages extends AppMessages {
 
     @Override
     @Message("Hallo {name}!") <i class="conum" data-value="2"></i><b>(2)</b>
@@ -2365,7 +2667,7 @@ But in fact, the suffix could be anything.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="configuration-reference"><a class="anchor" href="#configuration-reference"></a>3.9. Configuration Reference</h3>
+<h3 id="configuration-reference"><a class="anchor" href="#configuration-reference"></a>3.10. Configuration Reference</h3>
 <div class="paragraph configuration-legend">
 <p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> Configuration property fixed at build time - All other configuration properties are overridable at runtime</p>
 </div>

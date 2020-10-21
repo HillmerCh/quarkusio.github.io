@@ -445,6 +445,20 @@ As a result, the <code>security-jpa</code> defaults to using bcrypt-hashed passw
 <div class="sect1">
 <h2 id="testing-the-application"><a class="anchor" href="#testing-the-application"></a>Testing the Application</h2>
 <div class="sectionbody">
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>In the following tests we use the basic authentication mechanism, you can enable it by setting <code>quarkus.http.auth.basic=true</code> in the <code>application.properties</code> file.</p>
+</div>
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The application is now protected and the identities are provided by our database.
 The very first thing to check is to ensure the anonymous access works.</p>

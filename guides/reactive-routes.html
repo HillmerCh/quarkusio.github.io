@@ -94,6 +94,7 @@
 <li><a href="#returning-multis">Returning Multis</a></li>
 <li><a href="#streaming-json-array-items">Streaming JSON Array items</a></li>
 <li><a href="#event-stream-and-server-sent-event-support">Event Stream and Server-Sent Event support</a></li>
+<li><a href="#using-bean-validation">Using Bean Validation</a></li>
 </ul>
 </li>
 <li><a href="#using-the-vert-x-web-router">Using the Vert.x Web Router</a></li>
@@ -523,6 +524,19 @@ Person createPerson(@Body Person person, @Param("id") Optional&lt;String&gt; pri
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>A failure handler can declare a single method parameter whose type extends <code>Throwable</code>.
+The type of the parameter is used to match the result of <code>RoutingContext#failure()</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">Failure Handler Example</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Route(type = HandlerType.FAILURE)
+void unsupported(UnsupportedOperationException e, HttpServerResponse response) {
+  response.setStatusCode(501).end(e.getMessage());
+}</code></pre>
+</div>
+</div>
 <div class="sect2">
 <h3 id="returning-unis"><a class="anchor" href="#returning-unis"></a>Returning Unis</h3>
 <div class="paragraph">
@@ -791,6 +805,46 @@ event: person
 data: {"name":"spiderman", "id": 3}
 id: 3</code></pre>
 </div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="using-bean-validation"><a class="anchor" href="#using-bean-validation"></a>Using Bean Validation</h3>
+<div class="paragraph">
+<p>You can combine reactive routes and Bean Validation.
+First, don&#8217;t forget to add the <code>quarkus-hibernate-validator</code> extension to your project.
+Then, you can add constraints to your route parameter (annotated with <code>@Param</code> or <code>@Body</code>):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Route(produces = "application/json")
+Person createPerson(@Body @Valid Person person, @NonNull @Param("id") String primaryKey) {
+  // ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the parameters do not pass the tests, it returns an HTTP 400 response.
+If the request accepts JSON payload, the response follows the <a href="https://opensource.zalando.com/problem/constraint-violation/">Problem</a> format.</p>
+</div>
+<div class="paragraph">
+<p>When returning an object or a <code>Uni</code>, you can also use the <code>@Valid</code> annotation:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Route(...)
+@Valid Uni&lt;Person&gt; createPerson(@Body @Valid Person person, @NonNull @Param("id") String primaryKey) {
+  // ...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the item produced by the route does not pass the validation, it returns a HTTP 500 response.
+If the request accepts JSON payload, the response follows the <a href="https://opensource.zalando.com/problem/constraint-violation/">Problem</a> format.</p>
+</div>
+<div class="paragraph">
+<p>Note that only <code>@Valid</code> is supported on the return type.
+The returned class can use any constraint.
+In the case of <code>Uni</code>, it checks the item produced asynchronously.</p>
 </div>
 </div>
 </div>

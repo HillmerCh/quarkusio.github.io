@@ -679,7 +679,7 @@ public class CustomTenantConfigResolver implements TenantConfigResolver {
 </div>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code>, <code>hybrid</code></p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>service</code></p></td>
 </tr>
 <tr>
@@ -996,6 +996,20 @@ public class CustomTenantConfigResolver implements TenantConfigResolver {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-oidc_quarkus.oidc.token.header"></a><code><a href="#quarkus-oidc_quarkus.oidc.token.header">quarkus.oidc.token.header</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Custom HTTP header that contains a bearer token. This option is valid only when the application is of type <code>ApplicationType#SERVICE</code>}.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><a id="quarkus-oidc_quarkus.oidc.credentials.secret"></a><code><a href="#quarkus-oidc_quarkus.oidc.credentials.secret">quarkus.oidc.credentials.secret</a></code></p>
 </div>
 <div class="openblock description">
@@ -1264,12 +1278,12 @@ public class CustomTenantConfigResolver implements TenantConfigResolver {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-oidc_quarkus.oidc.authentication.xhr-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.authentication.xhr-auto-redirect">quarkus.oidc.authentication.xhr-auto-redirect</a></code></p>
+<p><a id="quarkus-oidc_quarkus.oidc.authentication.java-script-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.authentication.java-script-auto-redirect">quarkus.oidc.authentication.java-script-auto-redirect</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via XMLHttpRequest and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since XMLHttpRequest automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
+<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via JavaScript API such as XMLHttpRequest or Fetch and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since it automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
 </div>
 </div>
 </div></div></td>
@@ -1376,7 +1390,7 @@ public class CustomTenantConfigResolver implements TenantConfigResolver {
 </div>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code>, <code>hybrid</code></p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>service</code></p></td>
 </tr>
 <tr>
@@ -1693,6 +1707,20 @@ public class CustomTenantConfigResolver implements TenantConfigResolver {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-oidc_quarkus.oidc.-tenant-.token.header"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.token.header">quarkus.oidc."tenant".token.header</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Custom HTTP header that contains a bearer token. This option is valid only when the application is of type <code>ApplicationType#SERVICE</code>}.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><a id="quarkus-oidc_quarkus.oidc.-tenant-.credentials.secret"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.credentials.secret">quarkus.oidc."tenant".credentials.secret</a></code></p>
 </div>
 <div class="openblock description">
@@ -1975,12 +2003,12 @@ public class CustomTenantConfigResolver implements TenantConfigResolver {
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-oidc_quarkus.oidc.-tenant-.authentication.xhr-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.authentication.xhr-auto-redirect">quarkus.oidc."tenant".authentication.xhr-auto-redirect</a></code></p>
+<p><a id="quarkus-oidc_quarkus.oidc.-tenant-.authentication.java-script-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.authentication.java-script-auto-redirect">quarkus.oidc."tenant".authentication.java-script-auto-redirect</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via XMLHttpRequest and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since XMLHttpRequest automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
+<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via JavaScript API such as XMLHttpRequest or Fetch and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since it automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
 </div>
 </div>
 </div></div></td>

@@ -439,37 +439,6 @@ Each SQL statement must be terminated by a semicolon.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.batch-fetch-size"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.batch-fetch-size">quarkus.hibernate-orm.batch-fetch-size</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>The size of the batches used when loading entities and collections.</p>
-</div>
-<div class="paragraph">
-<p><code>-1</code> means batch loading is disabled. This is the default.</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>-1</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.max-fetch-depth"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.max-fetch-depth">quarkus.hibernate-orm.max-fetch-depth</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>The maximum depth of outer join fetch tree for single-ended associations (one-to-one, many-to-one). A <code>0</code> disables default outer join fetching.</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.physical-naming-strategy"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.physical-naming-strategy">quarkus.hibernate-orm.physical-naming-strategy</a></code></p>
 </div>
 <div class="openblock description">
@@ -833,6 +802,20 @@ MariaDB, Microsoft SQL Server and H2.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.log.format-sql"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.log.format-sql">quarkus.hibernate-orm.log.format-sql</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Format the SQL logs if SQL log is enabled</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.log.jdbc-warnings"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.log.jdbc-warnings">quarkus.hibernate-orm.log.jdbc-warnings</a></code></p>
 </div>
 <div class="openblock description">
@@ -859,6 +842,45 @@ MariaDB, Microsoft SQL Server and H2.</p>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>false</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-hibernate-orm_quarkus.hibernate-orm.fetch-fetching-logic-configuration"></a><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.fetch-fetching-logic-configuration">Fetching logic configuration</a></p></th>
+<th class="tableblock halign-left valign-middle"><p class="tableblock">Type</p></th>
+<th class="tableblock halign-left valign-middle"><p class="tableblock">Default</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.fetch.batch-size"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.fetch.batch-size">quarkus.hibernate-orm.fetch.batch-size</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The size of the batches used when loading entities and collections.</p>
+</div>
+<div class="paragraph">
+<p><code>-1</code> means batch loading is disabled. This is the default.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>-1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.fetch.max-depth"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.fetch.max-depth">quarkus.hibernate-orm.fetch.max-depth</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The maximum depth of outer join fetch tree for single-ended associations (one-to-one, many-to-one).</p>
+</div>
+<div class="paragraph">
+<p>A <code>0</code> disables default outer join fetching.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-hibernate-orm_quarkus.hibernate-orm.cache-caching-configuration"></a><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.cache-caching-configuration">Caching configuration</a></p></th>
@@ -979,37 +1001,6 @@ Each SQL statement must be terminated by a semicolon.</p>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>import.sql in DEV, TEST ; no-file otherwise</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.batch-fetch-size"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.batch-fetch-size">quarkus.hibernate-orm."persistence-unit-name".batch-fetch-size</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>The size of the batches used when loading entities and collections.</p>
-</div>
-<div class="paragraph">
-<p><code>-1</code> means batch loading is disabled. This is the default.</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>-1</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.max-fetch-depth"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.max-fetch-depth">quarkus.hibernate-orm."persistence-unit-name".max-fetch-depth</a></code></p>
-</div>
-<div class="openblock description">
-<div class="content">
-<div class="paragraph">
-<p>The maximum depth of outer join fetch tree for single-ended associations (one-to-one, many-to-one). A <code>0</code> disables default outer join fetching.</p>
-</div>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
-<td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -1348,6 +1339,20 @@ MariaDB, Microsoft SQL Server and H2.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.log.format-sql"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.log.format-sql">quarkus.hibernate-orm."persistence-unit-name".log.format-sql</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Format the SQL logs if SQL log is enabled</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>true</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.log.jdbc-warnings"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.log.jdbc-warnings">quarkus.hibernate-orm."persistence-unit-name".log.jdbc-warnings</a></code></p>
 </div>
 <div class="openblock description">
@@ -1359,6 +1364,45 @@ MariaDB, Microsoft SQL Server and H2.</p>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>depends on dialect</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.fetch-fetching-logic-configuration"></a><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.fetch-fetching-logic-configuration">Fetching logic configuration</a></p></th>
+<th class="tableblock halign-left valign-middle"><p class="tableblock">Type</p></th>
+<th class="tableblock halign-left valign-middle"><p class="tableblock">Default</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.fetch.batch-size"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.fetch.batch-size">quarkus.hibernate-orm."persistence-unit-name".fetch.batch-size</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The size of the batches used when loading entities and collections.</p>
+</div>
+<div class="paragraph">
+<p><code>-1</code> means batch loading is disabled. This is the default.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>-1</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.fetch.max-depth"></a><code><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.fetch.max-depth">quarkus.hibernate-orm."persistence-unit-name".fetch.max-depth</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The maximum depth of outer join fetch tree for single-ended associations (one-to-one, many-to-one).</p>
+</div>
+<div class="paragraph">
+<p>A <code>0</code> disables default outer join fetching.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
+<td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.cache-caching-configuration"></a><a href="#quarkus-hibernate-orm_quarkus.hibernate-orm.-persistence-unit-name-.cache-caching-configuration">Caching configuration</a></p></th>
@@ -2216,9 +2260,10 @@ Otherwise, <code>PT</code> is implicitly prepended to the value to obtain a stan
 <h2 id="metrics"><a class="anchor" href="#metrics"></a>Metrics</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The SmallRye Metrics extension is capable of exposing metrics that Hibernate ORM collects at runtime. To enable exposure of Hibernate metrics
-on the <code>/metrics</code> endpoint, make sure your project depends on the <code>quarkus-smallrye-metrics</code> artifact and set the configuration property <code>quarkus.hibernate-orm.metrics.enabled</code> to <code>true</code>.
-Metrics will then be available under the <code>vendor</code> scope.</p>
+<p>Either <a href="micrometer">Micrometer</a> or <a href="microprofile-metrics">SmallRye Metrics</a> are
+capable of exposing metrics that Hibernate ORM collects at runtime. To enable exposure of Hibernate metrics
+on the <code>/metrics</code> endpoint, make sure your project depends on a metrics extension and set the configuration property <code>quarkus.hibernate-orm.metrics.enabled</code> to <code>true</code>.
+When using <a href="microprofile-metrics">SmallRye Metrics</a>, metrics will be available under the <code>vendor</code> scope.</p>
 </div>
 </div>
 </div>
@@ -2243,6 +2288,24 @@ applications perform better.</p>
 <div class="paragraph">
 <p>Typically you would need to adapt your build scripts to include the Hibernate Enhancement plugins; in Quarkus this is
 not necessary as the enhancement step is integrated in the build and analysis of the Quarkus application.</p>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>Due to the usage of enhancement, using the <code>clone()</code> method on entities is currently not supported
+as it will also clone some enhancement-specific fields that are specific to the entity.</p>
+</div>
+<div class="paragraph">
+<p>This limitation might be removed in the future.</p>
+</div>
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">

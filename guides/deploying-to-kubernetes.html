@@ -88,6 +88,7 @@
 <li><a href="#changing-the-number-of-replicas">Changing the number of replicas:</a></li>
 <li><a href="#add-readiness-and-liveness-probes">Add readiness and liveness probes</a></li>
 <li><a href="#customizing-the-readiness-probe">Customizing the readiness probe:</a></li>
+<li><a href="#add-hostaliases">Add hostAliases</a></li>
 <li><a href="#using-the-kubernetes-client">Using the Kubernetes client</a></li>
 <li><a href="#deploying-to-minikube">Deploying to Minikube</a></li>
 </ul>
@@ -406,7 +407,7 @@ When using the <code>quarkus-container-image-jib</code> extension to build a con
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-none hljs">quarkus.kubernetes.annotations.foo=bar
-quarkus."app.quarkus/id"=42</code></pre>
+quarkus.kubernetes.annotations."app.quarkus/id"=42</code></pre>
 </div>
 </div>
 </div>
@@ -747,6 +748,33 @@ quarkus.kubernetes.readiness-probe.period=45s</code></pre>
 </div>
 </div>
 <div class="sect2">
+<h3 id="add-hostaliases"><a class="anchor" href="#add-hostaliases"></a>Add hostAliases</h3>
+<div class="paragraph">
+<p>To add entries to a Pod&#8217;s <code>/etc/hosts</code> file (more information can be found in <a href="https://kubernetes.io/docs/concepts/services-networking/add-entries-to-pod-etc-hosts-with-host-aliases/">Kubernetes documentation</a>), just apply the following configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">quarkus.kubernetes.hostaliases."10.0.0.0".hostnames=foo.com,bar.org</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This would generate the following <code>hostAliases</code> section in the <code>deployment</code> definition:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="yaml" class="language-yaml hljs">kind: Deployment
+spec:
+  template:
+    spec:
+      hostAliases:
+      - hostnames:
+        - foo.com
+        - bar.org
+        ip: 10.0.0.0</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
 <h3 id="using-the-kubernetes-client"><a class="anchor" href="#using-the-kubernetes-client"></a>Using the Kubernetes client</h3>
 <div class="paragraph">
 <p>Applications that are deployed to Kubernetes and need to access the API server will usually make use of the <code>kubernetes-client</code> extension:</p>
@@ -1045,6 +1073,12 @@ Here are some examples:</p>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">false</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quarkus.kubernetes.hostaliases</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Map&lt;String, HostAlias&gt;</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
 </tbody>
 </table>
 <div class="paragraph">
@@ -1279,11 +1313,34 @@ Below you will find tables describing all available types.</p>
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. HostAlias</caption>
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Property</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Description</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default Value</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">hostnames</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">String[]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">list of hostnames</p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="mounts-and-volumes"><a class="anchor" href="#mounts-and-volumes"></a>Mounts and Volumes</h4>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 7. Mount</caption>
+<caption class="title">Table 8. Mount</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1318,7 +1375,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 8. ConfigMapVolume</caption>
+<caption class="title">Table 9. ConfigMapVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1353,7 +1410,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 9. SecretVolume</caption>
+<caption class="title">Table 10. SecretVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1388,7 +1445,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 10. AzureDiskVolume</caption>
+<caption class="title">Table 11. AzureDiskVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1441,7 +1498,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 11. AwsElasticBlockStoreVolume</caption>
+<caption class="title">Table 12. AwsElasticBlockStoreVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1482,7 +1539,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 12. GitRepoVolume</caption>
+<caption class="title">Table 13. GitRepoVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1517,7 +1574,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 13. PersistentVolumeClaimVolume</caption>
+<caption class="title">Table 14. PersistentVolumeClaimVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1546,7 +1603,7 @@ Below you will find tables describing all available types.</p>
 </tbody>
 </table>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 14. AzureFileVolume</caption>
+<caption class="title">Table 15. AzureFileVolume</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1613,7 +1670,7 @@ Below you will find tables describing all available types.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Openshift users might want to use <code>oc</code> instead of <code>kubectl</code>:</p>
+<p>OpenShift users might want to use <code>oc</code> instead of <code>kubectl</code>:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1637,7 +1694,7 @@ relieves OpenShift users of the necessity of setting the <code>deployment-target
 <p>The OpenShift resources can be customized in a similar approach with Kubernetes.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 15. OpenShift</caption>
+<caption class="title">Table 16. OpenShift</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1901,7 +1958,7 @@ relieves OpenShift users of the necessity of setting the <code>deployment-target
 <p>The generated service can be customized using the following properties:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 16. Knative</caption>
+<caption class="title">Table 17. Knative</caption>
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">

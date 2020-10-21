@@ -292,21 +292,19 @@ with the following content:</p>
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import io.smallrye.mutiny.Multi;
+import io.smallrye.reactive.messaging.kafka.Record;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.jboss.logging.Logger;
-
-import io.reactivex.Flowable;
-import io.smallrye.reactive.messaging.kafka.KafkaRecord;
 
 /**
  * A bean producing random temperature data every second.
@@ -334,12 +332,10 @@ public class ValuesGenerator {
                     new WeatherStation(9, "Marrakesh", 20)
             ));
 
-
-    @Outgoing("temperature-values")                             <i class="conum" data-value="1"></i><b>(1)</b>
-    public Flowable&lt;KafkaRecord&lt;Integer, String&gt;&gt; generate() {
-
-        return Flowable.interval(500, TimeUnit.MILLISECONDS)    <i class="conum" data-value="2"></i><b>(2)</b>
-                .onBackpressureDrop()
+    @Outgoing("temperature-values")                                        <i class="conum" data-value="1"></i><b>(1)</b>
+    public Multi&lt;Record&lt;Integer, String&gt;&gt; generate() {
+        return Multi.createFrom().ticks().every(Duration.ofMillis(500))    <i class="conum" data-value="2"></i><b>(2)</b>
+                .onOverflow().drop()
                 .map(tick -&gt; {
                     WeatherStation station = stations.get(random.nextInt(stations.size()));
                     double temperature = BigDecimal.valueOf(random.nextGaussian() * 15 + station.averageTemperature)
@@ -347,21 +343,19 @@ public class ValuesGenerator {
                             .doubleValue();
 
                     LOG.infov("station: {0}, temperature: {1}", station.name, temperature);
-                    return KafkaRecord.of(station.id, Instant.now() + ";" + temperature);
+                    return Record.of(station.id, Instant.now() + ";" + temperature);
                 });
     }
 
-    @Outgoing("weather-stations")                               <i class="conum" data-value="3"></i><b>(3)</b>
-    public Flowable&lt;KafkaRecord&lt;Integer, String&gt;&gt; weatherStations() {
-        List&lt;KafkaRecord&lt;Integer, String&gt;&gt; stationsAsJson = stations.stream()
-            .map(s -&gt; KafkaRecord.of(
+    @Outgoing("weather-stations")                                          <i class="conum" data-value="3"></i><b>(3)</b>
+    public Multi&lt;Record&lt;Integer, String&gt;&gt; weatherStations() {
+        return Multi.createFrom().items(stations.stream()
+            .map(s -&gt; Record.of(
                     s.id,
                     "{ \"id\" : " + s.id +
                     ", \"name\" : \"" + s.name + "\" }"))
-            .collect(Collectors.toList());
-
-        return Flowable.fromIterable(stationsAsJson);
-    };
+        );
+    }
 
     private static class WeatherStation {
 
@@ -382,15 +376,15 @@ public class ValuesGenerator {
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Instruct Reactive Messaging to dispatch the items from the returned <code>Flowable</code> to <code>temperature-values</code>.</td>
+<td>Instruct Reactive Messaging to dispatch the items from the returned <code>Multi</code> to <code>temperature-values</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The method returns a RX Java 2 <em>stream</em> (<code>Flowable</code>) emitting a random temperature value every 0.5 seconds.</td>
+<td>The method returns a Mutiny <em>stream</em> (<code>Multi</code>) emitting a random temperature value every 0.5 seconds.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Instruct Reactive Messaging to dispatch the items from the returned <code>Flowable</code> (static list of weather stations) to <code>weather-stations</code>.</td>
+<td>Instruct Reactive Messaging to dispatch the items from the returned <code>Multi</code> (static list of weather stations) to <code>weather-stations</code>.</td>
 </tr>
 </table>
 </div>
@@ -740,7 +734,7 @@ To do so, edit the file <code>aggregator/src/main/docker/Dockerfile.jvm</code> a
 
 services:
   zookeeper:
-    image: strimzi/kafka:0.11.3-kafka-2.1.0
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
       "sh", "-c",
       "bin/zookeeper-server-start.sh config/zookeeper.properties"
@@ -752,7 +746,7 @@ services:
     networks:
       - kafkastreams-network
   kafka:
-    image: strimzi/kafka:0.11.3-kafka-2.1.0
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
       "sh", "-c",
       "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT} --override num.partitions=$${KAFKA_NUM_PARTITIONS}"
@@ -808,7 +802,7 @@ This image provides several useful tools such as <em>kafkacat</em> and <em>httpi
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">docker run --tty --rm -i --network ks debezium/tooling:1.0</code></pre>
+<pre class="highlightjs highlight"><code class="language-none hljs">docker run --tty --rm -i --network ks debezium/tooling:1.1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1626,7 +1620,7 @@ content-length: 265
 <p>This guide has shown how you can build stream processing applications using Quarkus and the Kafka Streams APIs,
 both in JVM and native modes.
 For running your KStreams application in production, you could also add health checks and metrics for the data pipeline.
-Refer to the Quarkus guides on <a href="microprofile-metrics">metrics</a> and <a href="microprofile-health">health checks</a> to learn more.</p>
+Refer to the Quarkus guides on <a href="micrometer">Micrometer</a>, <a href="microprofile-metrics">MicroProfile Metrics</a>, and <a href="microprofile-health">health checks</a> to learn more.</p>
 </div>
 </div>
 </div>

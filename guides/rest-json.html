@@ -102,6 +102,7 @@
 <li><a href="#whats-different-from-jakarta-ee-development">What&#8217;s Different from Jakarta EE Development</a>
 <ul class="sectlevel2">
 <li><a href="#no-need-for-application-class">No Need for <code>Application</code> Class</a></li>
+<li><a href="#only-a-single-jax-rs-application">Only a single JAX-RS application</a></li>
 <li><a href="#lifecycle-of-resources">Lifecycle of Resources</a></li>
 </ul>
 </li>
@@ -900,6 +901,16 @@ to solve this problem.</p>
 <h3 id="no-need-for-application-class"><a class="anchor" href="#no-need-for-application-class"></a>No Need for <code>Application</code> Class</h3>
 <div class="paragraph">
 <p>Configuration via an application-supplied subclass of <code>Application</code> is supported, but not required.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="only-a-single-jax-rs-application"><a class="anchor" href="#only-a-single-jax-rs-application"></a>Only a single JAX-RS application</h3>
+<div class="paragraph">
+<p>In contrast to JAX-RS (and RESTeasy) running in a standard servlet-container, Quarkus only supports the deployment of a single JAX-RS application.
+If multiple JAX-RS <code>Application</code> classes are defined, the build will fail with the message <code>Multiple classes have been annotated with @ApplicationPath which is currently not supported</code>.</p>
+</div>
+<div class="paragraph">
+<p>If multiple JAX-RS applications are defined, the property <code>quarkus.resteasy.ignoreApplicationClasses=true</code> can be used to ignore all explicit <code>Application</code> classes. This makes all resource-classes available via the application-path as defined by <code>quarkus.resteasy.path</code> (default: <code>/</code>).</p>
 </div>
 </div>
 <div class="sect2">

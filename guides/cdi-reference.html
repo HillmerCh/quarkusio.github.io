@@ -257,6 +257,25 @@ quarkus.index-dependency.&lt;name&gt;.classifier=(this one is optional)</code></
 <div class="paragraph">
 <p>For example, the following entries ensure that the <code>org.acme:acme-api</code> dependency is indexed:</p>
 </div>
+<div class="listingblock">
+<div class="title">Example application.properties</div>
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="properties" class="language-properties hljs">quarkus.index-dependency.acme.group-id=org.acme <i class="conum" data-value="1"></i><b>(1)</b>
+quarkus.index-dependency.acme.artifact-id=acme-api <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Value is a group id for a dependency identified by name <code>acme</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Value is an artifact id for a dependency identified by name <code>acme</code>.</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect2">
 <h3 id="how-to-exclude-types-and-dependencies-from-discovery"><a class="anchor" href="#how-to-exclude-types-and-dependencies-from-discovery"></a>1.2. How To Exclude Types and Dependencies from Discovery</h3>
@@ -1939,7 +1958,7 @@ Here is a summary of which extensions can access which metadata:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Shouldn&#8217;t rely on any metadata as this is one of the first CDI extensions invoked</p>
+<p>Shouldn&#8217;t rely on any metadata as it could be used at any time in any phase of the bootstrap</p>
 </li>
 </ul>
 </div>
@@ -1949,7 +1968,7 @@ Here is a summary of which extensions can access which metadata:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Has access to <code>ANNOTATION_STORE</code></p>
+<p>Has access to <code>ANNOTATION_STORE</code>, <code>QUALIFIERS</code>, <code>INTERCEPTOR_BINDINGS</code>, <code>STEREOTYPES</code></p>
 </li>
 </ul>
 </div>
@@ -1979,7 +1998,17 @@ Here is a summary of which extensions can access which metadata:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Has access to <code>ANNOTATION_STORE</code>, <code>QUALIFIERS</code>, <code>INTERCEPTOR_BINDINGS</code>, <code>STEREOTYPES</code>, <code>BEANS</code></p>
+<p>Has access to <code>ANNOTATION_STORE</code>, <code>QUALIFIERS</code>, <code>INTERCEPTOR_BINDINGS</code>, <code>STEREOTYPES</code>, <code>BEANS</code> (class-based beans only), <code>OBSERVERS</code> (class-based observers only), <code>INJECTION_POINTS</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>ObserverRegistrar</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Has access to <code>ANNOTATION_STORE</code>, <code>QUALIFIERS</code>, <code>INTERCEPTOR_BINDINGS</code>, <code>STEREOTYPES</code>, <code>BEANS</code>, <code>OBSERVERS</code> (class-based observers only), <code>INJECTION_POINTS</code></p>
 </li>
 </ul>
 </div>
@@ -2008,6 +2037,9 @@ Here is a summary of which extensions can access which metadata:</p>
 <div class="ulist">
 <ul>
 <li>
+<p>HTTP GET <code>/quarkus/arc</code> - returns the summary; number of beans, config properties, etc.</p>
+</li>
+<li>
 <p>HTTP GET <code>/quarkus/arc/beans</code> - returns the list of all beans</p>
 <div class="ulist">
 <ul>
@@ -2029,6 +2061,9 @@ Here is a summary of which extensions can access which metadata:</p>
 </li>
 </ul>
 </div>
+</li>
+<li>
+<p>HTTP GET <code>/quarkus/arc/removed-beans</code> - returns the list of unused beans removed during build</p>
 </li>
 <li>
 <p>HTTP GET <code>/quarkus/arc/observers</code> - returns the list of all observer methods</p>
@@ -2184,7 +2219,7 @@ An unused bean:</p>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>If set to true then <code>javax.enterprise.inject.Produces</code> is automatically added to all methods that are annotated with a scope annotation, a stereotype or a qualifier, and are not annotated with <code>Inject</code> or <code>Produces</code>, and no parameter is annotated with <code>Disposes</code>, <code>Observes</code> or <code>ObservesAsync</code>.</p>
+<p>If set to true then <code>javax.enterprise.inject.Produces</code> is automatically added to all non-void methods that are annotated with a scope annotation, a stereotype or a qualifier, and are not annotated with <code>Inject</code> or <code>Produces</code>, and no parameter is annotated with <code>Disposes</code>, <code>Observes</code> or <code>ObservesAsync</code>.</p>
 </div>
 </div>
 </div></div></td>
@@ -2228,6 +2263,20 @@ An unused bean:</p>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">list of string</p></td>
 <td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-arc_quarkus.arc.detect-unused-false-positives"></a><code><a href="#quarkus-arc_quarkus.arc.detect-unused-false-positives">quarkus.arc.detect-unused-false-positives</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>If set to true then the container attempts to detect "unused removed beans" false positives during programmatic lookup at runtime. You can disable this feature to conserve some memory when running your application in production.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>true</code></p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock"><a id="quarkus-arc_quarkus.arc.exclude-dependency-artifacts-that-should-be-excluded-from-discovery"></a><a href="#quarkus-arc_quarkus.arc.exclude-dependency-artifacts-that-should-be-excluded-from-discovery">Artifacts that should be excluded from discovery</a></p></th>

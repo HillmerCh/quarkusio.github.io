@@ -228,7 +228,7 @@ You can follow the instructions from the <a href="https://kafka.apache.org/quick
 services:
 
   zookeeper:
-    image: strimzi/kafka:0.11.3-kafka-2.1.0
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
       "sh", "-c",
       "bin/zookeeper-server-start.sh config/zookeeper.properties"
@@ -239,7 +239,7 @@ services:
       LOG_DIR: /tmp/logs
 
   kafka:
-    image: strimzi/kafka:0.11.3-kafka-2.1.0
+    image: strimzi/kafka:0.19.0-kafka-2.5.0
     command: [
       "sh", "-c",
       "bin/kafka-server-start.sh config/server.properties --override listeners=$${KAFKA_LISTENERS} --override advertised.listeners=$${KAFKA_ADVERTISED_LISTENERS} --override zookeeper.connect=$${KAFKA_ZOOKEEPER_CONNECT}"
@@ -282,12 +282,13 @@ This is a development cluster, do not use in production.
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package org.acme.kafka;
 
-import io.reactivex.Flowable;
-import org.eclipse.microprofile.reactive.messaging.Outgoing;
+import java.time.Duration;
+import java.util.Random;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
+
+import io.smallrye.mutiny.Multi;
+import org.eclipse.microprofile.reactive.messaging.Outgoing;
 
 /**
  * A bean producing random prices every 5 seconds.
@@ -299,8 +300,9 @@ public class PriceGenerator {
     private Random random = new Random();
 
     @Outgoing("generated-price")                        <i class="conum" data-value="1"></i><b>(1)</b>
-    public Flowable&lt;Integer&gt; generate() {               <i class="conum" data-value="2"></i><b>(2)</b>
-        return Flowable.interval(5, TimeUnit.SECONDS)
+    public Multi&lt;Integer&gt; generate() {                  <i class="conum" data-value="2"></i><b>(2)</b>
+        return Multi.createFrom().ticks().every(Duration.ofSeconds(5))
+                .onOverflow().drop()
                 .map(tick -&gt; random.nextInt(100));
     }
 
@@ -315,7 +317,7 @@ public class PriceGenerator {
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The method returns a RX Java 2 <em>stream</em> (<code>Flowable</code>) emitting a random <em>price</em> every 5 seconds.</td>
+<td>The method returns a Mutiny <em>stream</em> (<code>Multi</code>) emitting a random <em>price</em> every 5 seconds.</td>
 </tr>
 </table>
 </div>

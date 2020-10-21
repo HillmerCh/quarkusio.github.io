@@ -1358,12 +1358,12 @@ for more information.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.analysis.configurer"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.analysis.configurer">quarkus.hibernate-search.elasticsearch.analysis.configurer</a></code></p>
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.layout.strategy"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.layout.strategy">quarkus.hibernate-search.elasticsearch.layout.strategy</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>The class or the name of the bean used to configure full text analysis (e.g. analyzers, normalizers).</p>
+<p>The class or the name of the bean used to configure layout (e.g. index names, index aliases).</p>
 </div>
 </div>
 </div></div></td>
@@ -1372,12 +1372,12 @@ for more information.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.layout.strategy"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.layout.strategy">quarkus.hibernate-search.elasticsearch.layout.strategy</a></code></p>
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.analysis.configurer"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.analysis.configurer">quarkus.hibernate-search.elasticsearch.analysis.configurer</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>The class or the name of the bean used to configure layout (e.g. index names, index aliases).</p>
+<p>The class or the name of the bean used to configure full text analysis (e.g. analyzers, normalizers).</p>
 </div>
 </div>
 </div></div></td>
@@ -1447,13 +1447,44 @@ for more information.</p>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>The connection timeout.</p>
+<p>The timeout when establishing a connection to an Elasticsearch server.</p>
 </div>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
   <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>3S</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>1S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.read-timeout"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.read-timeout">quarkus.hibernate-search.elasticsearch.read-timeout</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The timeout when reading responses from an Elasticsearch server.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>30S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.request-timeout"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.request-timeout">quarkus.hibernate-search.elasticsearch.request-timeout</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The timeout when executing a request to an Elasticsearch server.
+ This includes the time needed to wait for a connection to be available, send the request and read the response.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -1566,7 +1597,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The number of indexing queues assigned to each index.
- Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
+ Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
 </div>
 </div>
 </div></div></td>
@@ -1596,13 +1627,27 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The maximum size of bulk requests created when processing indexing queues.
- Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
+ Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
  Note that raising this number above the queue size has no effect, as bulks cannot include more requests than are contained in the queue.</p>
 </div>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock">int</p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>100</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.indexes.-index-name-.analysis.configurer"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.indexes.-index-name-.analysis.configurer">quarkus.hibernate-search.elasticsearch.indexes."index-name".analysis.configurer</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The class or the name of the bean used to configure full text analysis (e.g. analyzers, normalizers).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">class name</p></td>
+<td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -1641,7 +1686,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The number of indexing queues assigned to each index.
- Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
+ Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
 </div>
 </div>
 </div></div></td>
@@ -1671,7 +1716,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The maximum size of bulk requests created when processing indexing queues.
- Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
+ Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
  Note that raising this number above the queue size has no effect, as bulks cannot include more requests than are contained in the queue.</p>
 </div>
 </div>
@@ -1703,6 +1748,20 @@ for more information.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.layout.strategy"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.layout.strategy">quarkus.hibernate-search.elasticsearch.backends."backend-name".layout.strategy</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The class or the name of the bean used to configure layout (e.g. index names, index aliases).</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">class name</p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.analysis.configurer"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.analysis.configurer">quarkus.hibernate-search.elasticsearch.backends."backend-name".analysis.configurer</a></code></p>
 </div>
 <div class="openblock description">
@@ -1717,12 +1776,12 @@ for more information.</p>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.layout.strategy"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.layout.strategy">quarkus.hibernate-search.elasticsearch.backends."backend-name".layout.strategy</a></code></p>
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.indexes.-index-name-.analysis.configurer"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.indexes.-index-name-.analysis.configurer">quarkus.hibernate-search.elasticsearch.backends."backend-name".indexes."index-name".analysis.configurer</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>The class or the name of the bean used to configure layout (e.g. index names, index aliases).</p>
+<p>The class or the name of the bean used to configure full text analysis (e.g. analyzers, normalizers).</p>
 </div>
 </div>
 </div></div></td>
@@ -1792,13 +1851,44 @@ for more information.</p>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>The connection timeout.</p>
+<p>The timeout when establishing a connection to an Elasticsearch server.</p>
 </div>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
   <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>3S</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>1S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.read-timeout"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.read-timeout">quarkus.hibernate-search.elasticsearch.backends."backend-name".read-timeout</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The timeout when reading responses from an Elasticsearch server.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>30S</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.request-timeout"></a><code><a href="#quarkus-hibernate-search-elasticsearch_quarkus.hibernate-search.elasticsearch.backends.-backend-name-.request-timeout">quarkus.hibernate-search.elasticsearch.backends."backend-name".request-timeout</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>The timeout when executing a request to an Elasticsearch server.
+ This includes the time needed to wait for a connection to be available, send the request and read the response.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">Duration</a>
+  <a href="#duration-note-anchor" title="More information about the Duration format"><span class="icon"><i class="fa fa-question-circle"></i></span></a></p></td>
+<td class="tableblock halign-left valign-middle"></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -1911,7 +2001,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The number of indexing queues assigned to each index.
- Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
+ Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
 </div>
 </div>
 </div></div></td>
@@ -1941,7 +2031,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The maximum size of bulk requests created when processing indexing queues.
- Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
+ Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
  Note that raising this number above the queue size has no effect, as bulks cannot include more requests than are contained in the queue.</p>
 </div>
 </div>
@@ -1986,7 +2076,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The number of indexing queues assigned to each index.
- Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
+ Higher values will lead to more connections being used in parallel, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.</p>
 </div>
 </div>
 </div></div></td>
@@ -2016,7 +2106,7 @@ for more information.</p>
 <div class="content">
 <div class="paragraph">
 <p>The maximum size of bulk requests created when processing indexing queues.
- Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.8/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
+ Higher values will lead to more documents being sent in each HTTP request sent to Elasticsearch, which may lead to higher indexing throughput, but incurs a risk of overloading Elasticsearch, i.e. of overflowing its HTTP request buffers and tripping <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.9/circuit-breaker.html">circuit breakers</a>, leading to Elasticsearch giving up on some request and resulting in indexing failures.
  Note that raising this number above the queue size has no effect, as bulks cannot include more requests than are contained in the queue.</p>
 </div>
 </div>

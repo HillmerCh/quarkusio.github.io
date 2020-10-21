@@ -824,7 +824,7 @@ a discriminator field inside the document. It can be useful when working with ab
 <h2 id="connection-health-check"><a class="anchor" href="#connection-health-check"></a>Connection Health Check</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you are using the <code>quarkus-smallrye-health</code> extension, <code>quarkus-mongodb</code> will automatically add a readiness health check
+<p>If you are using the <code>quarkus-smallrye-health</code> extension, <code>quarkus-mongodb-client</code> will automatically add a readiness health check
 to validate the connection to the cluster.</p>
 </div>
 <div class="paragraph">
@@ -839,11 +839,12 @@ to validate the connection to the cluster.</p>
 <h2 id="metrics"><a class="anchor" href="#metrics"></a>Metrics</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>If you are using the <code>quarkus-smallrye-metrics</code> extension, <code>quarkus-mongodb</code> can provide metrics about the connection pools.
+<p>If you are using the <code>quarkus-micrometer</code> or <code>quarkus-smallrye-metrics</code> extension, <code>quarkus-mongodb-client</code> can provide metrics about the connection pools.
 This behavior must first be enabled by setting the <code>quarkus.mongodb.metrics.enabled</code> property to <code>true</code> in your <code>application.properties</code>.</p>
 </div>
 <div class="paragraph">
-<p>So when you access the <code>/metrics</code> endpoint of your application you will have information about the connection pool status in the <code>vendor</code> scope.</p>
+<p>So when you access the <code>/metrics</code> endpoint of your application you will have information about the connection pool status.
+When using <a href="microprofile-metrics">SmallRye Metrics</a>, connection pool metrics will be available under the <code>vendor</code> scope.</p>
 </div>
 </div>
 </div>

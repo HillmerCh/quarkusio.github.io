@@ -109,6 +109,7 @@
 <li><a href="#accessing-id-and-access-tokens">Accessing ID and Access Tokens</a></li>
 <li><a href="#user-info">User Info</a></li>
 <li><a href="#token-claims-and-securityidentity-roles">Token Claims And SecurityIdentity Roles</a></li>
+<li><a href="#listening-to-important-authentication-events">Listening to important authentication events</a></li>
 <li><a href="#single-page-applications">Single Page Applications</a></li>
 <li><a href="#running-behind-a-reverse-proxy">Running behind a reverse proxy</a></li>
 <li><a href="#configuration-reference">Configuration Reference</a></li>
@@ -580,7 +581,8 @@ public class ProtectedResource {
 <div class="sectionbody">
 <div class="paragraph">
 <p>Set <code>quarkus.oidc.user-info-required=true</code> if a UserInfo JSON object from the OIDC userinfo endpoint has to be requested.
-This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code>javax.json.JsonObject</code> wrapper) object accessible as a SecurityIdentity <code>userinfo</code> attribute.</p>
+A request will be sent to the OpenId Provider UserInfo endpont and  an <code>io.quarkus.oidc.UserInfo</code> (a simple <code>javax.json.JsonObject</code> wrapper) object will be created.
+<code>io.quarkus.oidc.UserInfo</code> can be either injected or accessed as a SecurityIdentity <code>userinfo</code> attribute.</p>
 </div>
 </div>
 </div>
@@ -597,7 +599,39 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 <p>If only the access token contains the roles and this access token is not meant to be propagated to the downstream endpoints then set <code>quarkus.oidc.roles.source=accesstoken</code>.</p>
 </div>
 <div class="paragraph">
-<p>If UserInfo is the source of the roles then set <code>quarkus.oidc.user-info-required=true</code> and <code>quarkus.oidc.roles.source=userinfo</code>, and if needed, <code>quarkus.oidc.roles.role-claim-path</code>.</p>
+<p>If UserInfo is the source of the roles then set <code>quarkus.oidc.authentication.user-info-required=true</code> and <code>quarkus.oidc.roles.source=userinfo</code>, and if needed, <code>quarkus.oidc.roles.role-claim-path</code>.</p>
+</div>
+<div class="paragraph">
+<p>Additionally a custom <code>SecurityIdentityAugmentor</code> can also be used to add the roles as documented <a href="security#security-identity-customization">here</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="listening-to-important-authentication-events"><a class="anchor" href="#listening-to-important-authentication-events"></a>Listening to important authentication events</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>One can register <code>@ApplicationScoped</code> bean which will observe important OIDC authentication events. The listener will be updated when a user has logged in for the first time or re-authenticated, as well as when the session has been refreshed. More events may be reported in the future. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+
+import io.quarkus.oidc.IdTokenCredential;
+import io.quarkus.oidc.SecurityEvent;
+import io.quarkus.security.identity.AuthenticationRequestContext;
+import io.vertx.ext.web.RoutingContext;
+
+@ApplicationScoped
+public class SecurityEventListener {
+
+    public void event(@Observes SecurityEvent event) {
+        String tenantId = event.getSecurityIdentity().getAttribute("tenant-id");
+        RoutingContext vertxContext = event.getSecurityIdentity().getCredential(IdTokenCredential.class).getRoutingContext();
+        vertxContext.put("listener-message", String.format("event:%s,tenantId:%s", event.getEventType().name(), tenantId));
+    }
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -608,15 +642,15 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 <p>Please check if implementing SPAs the way it is suggested in the <a href="security-openid-connect#single-page-applications">Single Page Applications for Service Applications</a> section can meet your requirements.</p>
 </div>
 <div class="paragraph">
-<p>If you prefer to use SPA and <code>XMLHttpRequest</code>(XHR) with Quarkus web applications, please be aware that OpenID Connect Providers may not support CORS for Authorization endpoints where the users are authenticated after a redirect from Quarkus. This will lead to authentication failures if the Quarkus application and the OpenID Connect Provider are hosted on the different HTTP domains/ports.</p>
+<p>If you prefer to use SPA and JavaScript API such as <code>Fetch</code> or <code>XMLHttpRequest</code>(XHR) with Quarkus web applications, please be aware that OpenID Connect Providers may not support CORS for Authorization endpoints where the users are authenticated after a redirect from Quarkus. This will lead to authentication failures if the Quarkus application and the OpenID Connect Provider are hosted on the different HTTP domains/ports.</p>
 </div>
 <div class="paragraph">
-<p>In such cases, set the <code>quarkus.oidc.authentication.xhr-auto-redirect</code> property to <code>false</code> which will instruct Quarkus to return a <code>499</code> status code and <code>WWW-Authenticate</code> header with the <code>OIDC</code> value. The browser script also needs to be updated to set <code>X-Requested-With</code> header with the <code>XMLHttpRequest</code> value and reload the last requested page in case of <code>499</code>, for example:</p>
+<p>In such cases, set the <code>quarkus.oidc.authentication.java-script-auto-redirect</code> property to <code>false</code> which will instruct Quarkus to return a <code>499</code> status code and <code>WWW-Authenticate</code> header with the <code>OIDC</code> value. The browser script also needs to be updated to set <code>X-Requested-With</code> header with the <code>JavaScript</code> value and reload the last requested page in case of <code>499</code>, for example:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="javascript" class="language-javascript hljs">Future&lt;void&gt; callQuarkusService() async {
-    Map&lt;String, String&gt; headers = Map.fromEntries([MapEntry("X-Requested-With", "XMLHttpRequest")]);
+    Map&lt;String, String&gt; headers = Map.fromEntries([MapEntry("X-Requested-With", "JavaScript")]);
 
     await http
         .get("https://localhost:443/serviceCall")
@@ -715,7 +749,7 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 </div>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code>, <code>hybrid</code></p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>service</code></p></td>
 </tr>
 <tr>
@@ -1032,6 +1066,20 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-oidc_quarkus.oidc.token.header"></a><code><a href="#quarkus-oidc_quarkus.oidc.token.header">quarkus.oidc.token.header</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Custom HTTP header that contains a bearer token. This option is valid only when the application is of type <code>ApplicationType#SERVICE</code>}.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><a id="quarkus-oidc_quarkus.oidc.credentials.secret"></a><code><a href="#quarkus-oidc_quarkus.oidc.credentials.secret">quarkus.oidc.credentials.secret</a></code></p>
 </div>
 <div class="openblock description">
@@ -1300,12 +1348,12 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-oidc_quarkus.oidc.authentication.xhr-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.authentication.xhr-auto-redirect">quarkus.oidc.authentication.xhr-auto-redirect</a></code></p>
+<p><a id="quarkus-oidc_quarkus.oidc.authentication.java-script-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.authentication.java-script-auto-redirect">quarkus.oidc.authentication.java-script-auto-redirect</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via XMLHttpRequest and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since XMLHttpRequest automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
+<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via JavaScript API such as XMLHttpRequest or Fetch and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since it automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
 </div>
 </div>
 </div></div></td>
@@ -1412,7 +1460,7 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 </div>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><code>web-app</code>, <code>service</code>, <code>hybrid</code></p></td>
 <td class="tableblock halign-left valign-middle"><p class="tableblock"><code>service</code></p></td>
 </tr>
 <tr>
@@ -1729,6 +1777,20 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><a id="quarkus-oidc_quarkus.oidc.-tenant-.token.header"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.token.header">quarkus.oidc."tenant".token.header</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Custom HTTP header that contains a bearer token. This option is valid only when the application is of type <code>ApplicationType#SERVICE</code>}.</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p><a id="quarkus-oidc_quarkus.oidc.-tenant-.credentials.secret"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.credentials.secret">quarkus.oidc."tenant".credentials.secret</a></code></p>
 </div>
 <div class="openblock description">
@@ -2011,12 +2073,12 @@ This will make an <code>io.quarkus.oidc.UserInfo</code> (which is a simple <code
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p><a id="quarkus-oidc_quarkus.oidc.-tenant-.authentication.xhr-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.authentication.xhr-auto-redirect">quarkus.oidc."tenant".authentication.xhr-auto-redirect</a></code></p>
+<p><a id="quarkus-oidc_quarkus.oidc.-tenant-.authentication.java-script-auto-redirect"></a><code><a href="#quarkus-oidc_quarkus.oidc.-tenant-.authentication.java-script-auto-redirect">quarkus.oidc."tenant".authentication.java-script-auto-redirect</a></code></p>
 </div>
 <div class="openblock description">
 <div class="content">
 <div class="paragraph">
-<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via XMLHttpRequest and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since XMLHttpRequest automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
+<p>If this property is set to 'true' then a normal 302 redirect response will be returned if the request was initiated via JavaScript API such as XMLHttpRequest or Fetch and the current user needs to be (re)authenticated which may not be desirable for Single Page Applications since it automatically following the redirect may not work given that OIDC authorization endpoints typically do not support CORS. If this property is set to <code>false</code> then a status code of '499' will be returned to allow the client to handle the redirect manually</p>
 </div>
 </div>
 </div></div></td>

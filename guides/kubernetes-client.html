@@ -89,6 +89,7 @@
 <li><a href="#testing">Testing</a></li>
 <li><a href="#note-on-implementing-the-watcher-interface">Note on implementing the Watcher interface</a></li>
 <li><a href="#access-to-the-kubernetes-api">Access to the Kubernetes API</a></li>
+<li><a href="#openshift-client">OpenShift Client</a></li>
 <li><a href="#configuration-reference">Configuration Reference</a></li>
 </ul></div>
     <div>
@@ -158,7 +159,7 @@ normally provided by the extension by simply declaring custom versions of those 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@ApplicationScoped
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Singleton
 public class KubernetesClientProducer {
 
     @Produces
@@ -248,13 +249,47 @@ public class KubernetesClientTest {
 &lt;/dependency&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>You can create a <code>CustomKubernetesMockServerTestResource.java</code> to ensure all your <code>@QuarkusTest</code> enabled test classes share the same mock server setup:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">public class CustomKubernetesMockServerTestResource extends KubernetesMockServerTestResource {
+
+    @Override
+    public void configureMockServer(KubernetesMockServer mockServer) {
+        mockServer.expect().get().withPath("/api/v1/namespaces/test/pods")
+                .andReturn(200, new PodList())
+                .always();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and use this in your other test classes as follows:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight nowrap"><code data-lang="java" class="language-java hljs">@QuarkusTestResource(KubernetesMockServerTestResource.class)
+@QuarkusTest
+public class KubernetesClientTest {
+
+    //tests will now use the configured server...
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Furthermore, to get a mock server that replies with empty lists by default (instead of getting 404 responses from the Kubernetes API),
+you can use the <code>EmptyDefaultKubernetesMockServerTestResource.class</code> instead of
+<code>KubernetesMockServerTestResource.class</code>.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="note-on-implementing-the-watcher-interface"><a class="anchor" href="#note-on-implementing-the-watcher-interface"></a>Note on implementing the Watcher interface</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Due to the restrictions imposed by GraalVM, extra care needs to be taken when implementing a <code>io.fabric8.kubernetes.client.Watcher</code> if the application is intended to work in native mode.
+<p>Due to the restrictions imposed by GraalVM, extra care needs to be taken when implementing an <code>io.fabric8.kubernetes.client.Watcher</code> if the application is intended to work in native mode.
 Essentially every <code>Watcher</code> implementation needs to specify the Kubernetes model class that it handles via the <code>Watcher</code>'s generic type at class definition time.
 To better understand this, suppose we want to watch for changes to Kubernetes <code>Pod</code> resources. There are a couple ways to write such a <code>Watcher</code> that are guaranteed to work in native:</p>
 </div>
@@ -391,6 +426,82 @@ subjects:
 <div class="paragraph">
 <p>Replace <code>&lt;applicationName&gt;</code> and <code>&lt;namespace&gt;</code> with your values.
 Have a look at <a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/">Configure Service Accounts for Pods</a> to get further information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="openshift-client"><a class="anchor" href="#openshift-client"></a>OpenShift Client</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>If the targeted Kubernetes cluster is an OpenShift cluster, it is possible to access it through
+the <code>openshift-client</code> extension, in a similar way. This leverages the dedicated fabric8
+openshift client, and provides access to <code>OpenShift</code> proprietary objects (e.g. <code>Route</code>, <code>ProjectRequest</code>, <code>BuildConfig</code> &#8230;&#8203;)</p>
+</div>
+<div class="paragraph">
+<p>Note that the configuration properties are shared with the <code>kubernetes-client</code> extension. In
+particular they have the same <code>quarkus.kubernetes-client</code> prefix.</p>
+</div>
+<div class="paragraph">
+<p>Add the extension with:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">./mvnw quarkus:add-extension -Dextensions="openshift-client"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that <code>openshift-client</code> extension has a dependency on the <code>kubernetes-client</code> extension.</p>
+</div>
+<div class="paragraph">
+<p>To use the client, inject an <code>OpenShiftClient</code> instead of the <code>KubernetesClient</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Inject
+private OpenShiftClient openshiftClient;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If you need to override the default <code>OpenShiftClient</code>, provide a producer such as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@Singleton
+public class OpenShiftClientProducer {
+
+    @Produces
+    public OpenShiftClient openshiftClient() {
+        // here you would create a custom client
+        return new DefaultOpenShiftClient();
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mock support is also provided in a similar fashion:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">@QuarkusTestResource(OpenShiftMockServerTestResource.class)
+@QuarkusTest
+public class OpenShiftClientTest {
+
+    @MockServer
+    private OpenShiftMockServer mockServer;
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To use this feature, you have to add a dependency on <code>quarkus-test-openshift-client</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="xml" class="language-xml hljs">&lt;dependency&gt;
+    &lt;groupId&gt;io.quarkus&lt;/groupId&gt;
+    &lt;artifactId&gt;quarkus-test-openshift-client&lt;/artifactId&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -588,6 +699,20 @@ Have a look at <a href="https://kubernetes.io/docs/tasks/configure-pod-container
 <div class="content">
 <div class="paragraph">
 <p>Kubernetes auth password</p>
+</div>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">string</p></td>
+<td class="tableblock halign-left valign-middle"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p><span class="icon"><i class="fa fa-lock" title="Fixed at build time"></i></span> <a id="quarkus-kubernetes-client_quarkus.kubernetes-client.token"></a><code><a href="#quarkus-kubernetes-client_quarkus.kubernetes-client.token">quarkus.kubernetes-client.token</a></code></p>
+</div>
+<div class="openblock description">
+<div class="content">
+<div class="paragraph">
+<p>Kubernetes oauth token</p>
 </div>
 </div>
 </div></div></td>
