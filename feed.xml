@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Mon, 26 Oct 2020 09:25:11 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 27 Oct 2020 09:47:23 +0000</lastBuildDate>
+        
+        <item>
+            <title>Mutiny - Flow control and Back-pressure</title>
+            <link>
+                https://quarkus.io/blog/mutiny-back-pressure/
+            </link>
+            <description>
+                Reactive Programming offers an elegant, flexible, and powerful way to write asynchronous code. It supports failure handling, both sequential and parallel operation composition, and plenty of operators. Reactive programming promotes data streams as a primary construct, and your code is observing streams and reacting to signals. Figure 1. Origins of...
+            </description>
+            <pubDate>Tue, 27 Oct 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/mutiny-back-pressure/
+            </guid>
+        </item>
         
         <item>
             <title>Quarkus 1.9 released - Micrometer extension maturing, multiple Redis clients, Quarkiverse</title>
@@ -130,20 +144,6 @@
             <pubDate>Mon, 05 Oct 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/contributing-for-the-first-time/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Biased locking removed from Java - does it affect you ?</title>
-            <link>
-                https://quarkus.io/blog/biased-locking-help/
-            </link>
-            <description>
-                Last week we became aware that the OpenJDK team in Java 15 have disabled biased locking (JEP 374) in the Java virtual machine. This is a change from previous versions and could potentially have a negative impact on Java application&#8217;s performance. Red Hat&#8217;s own performance teams are currently running performance...
-            </description>
-            <pubDate>Wed, 30 Sep 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/biased-locking-help/
             </guid>
         </item>
         
