@@ -603,7 +603,7 @@ These operations should be done at build time and the metamodel be passed to the
 <dd>
 <p>The CDI portable extension model is very flexible.
 Too flexible to benefit from the build time boot promoted by Quarkus.
-Most extension we have seen do not make use of these extreme flexibilities capabilities.
+Most extension we have seen do not make use of these extreme flexibility capabilities.
 The way to port a CDI extension to Quarkus is to rewrite it as a Quarkus extension which will define the various beans at build time (deployment time in extension parlance).</p>
 </dd>
 </dl>
@@ -703,7 +703,7 @@ You may want to use the <code>create-extension</code> mojo of <code>io.quarkus:q
 <p>Your runtime artifact should depend on <code>io.quarkus:quarkus-core</code>, and possibly the runtime artifacts of other Quarkus
 modules if you want to use functionality provided by them.
 You will also need to include the <code>io.quarkus:quarkus-bootstrap-maven-plugin</code> to generate the Quarkus extension descriptor included into the runtime artifact, if you are using the Quarkus parent pom it will automatically inherit the correct configuration.
-Futhermore, you&#8217;ll need to configure the <code>maven-compiler-plugin</code> to detect the <code>quarkus-extension-processor</code> annotation processor.</p>
+Furthermore, you&#8217;ll need to configure the <code>maven-compiler-plugin</code> to detect the <code>quarkus-extension-processor</code> annotation processor.</p>
 </div>
 <div class="admonitionblock note">
 <table>

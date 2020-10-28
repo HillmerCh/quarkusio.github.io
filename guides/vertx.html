@@ -1023,7 +1023,7 @@ on <code>application.properties</code>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Assuming <code>/tmp/</code> is writeable this can be fixed by setting the <code>vertx.cacheDirBase</code> property to point to a directory in <code>/tmp/</code> for instance in OpenShift by creating an environment variable <code>JAVA_OPTS</code> with the value <code>-Dvertx.cacheDirBase=/tmp/vertx</code>.</p>
+<p>Assuming <code>/tmp/</code> is writable this can be fixed by setting the <code>vertx.cacheDirBase</code> property to point to a directory in <code>/tmp/</code> for instance in OpenShift by creating an environment variable <code>JAVA_OPTS</code> with the value <code>-Dvertx.cacheDirBase=/tmp/vertx</code>.</p>
 </div>
 </div>
 </div>
@@ -1119,7 +1119,7 @@ Quarkus integrates it so different beans can interact with asynchronous messages
 This part is covered in the <a href="reactive-event-bus">event bus documentation</a>.</p>
 </li>
 <li>
-<p>Data streaming and Apache Kafka are a important parts of modern systems.
+<p>Data streaming and Apache Kafka are an important part of modern systems.
 Quarkus integrates data streaming using Reactive Messaging.
 More details on <a href="kafka">Interacting with Kafka</a>.</p>
 </li>

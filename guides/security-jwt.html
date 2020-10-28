@@ -690,7 +690,7 @@ First part - JWT headers, second part - JWT claims, third part - JWT signature.<
 <div class="title">curl Command for /secured/roles-allowed With JWT</div>
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">$ curl -H "Authorization: Bearer eyJraWQ..." http://127.0.0.1:8080/secured/roles-allowed; echo
-hello + jdoe@quarkus.io, isHttps: false, authScheme: MP-JWT, hasJWT: true, birthdate: 2001-07-13</code></pre>
+hello + jdoe@quarkus.io, isHttps: false, authScheme: Bearer, hasJWT: true, birthdate: 2001-07-13</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -828,7 +828,7 @@ public class TokenSecuredResource {
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="shell" class="language-shell hljs">$ curl -H "Authorization: Bearer eyJraWQ..." http://127.0.0.1:8080/secured/roles-allowed-admin; echo
-hello + jdoe@quarkus.io, isHttps: false, authScheme: MP-JWT, hasJWT: true, birthdate: 2001-07-13</code></pre>
+hello + jdoe@quarkus.io, isHttps: false, authScheme: Bearer, hasJWT: true, birthdate: 2001-07-13</code></pre>
 </div>
 </div>
 </div>

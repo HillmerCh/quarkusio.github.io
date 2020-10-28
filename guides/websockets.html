@@ -87,6 +87,8 @@
 <li><a href="#handling-web-sockets">Handling web sockets</a></li>
 <li><a href="#a-slick-web-frontend">A slick web frontend</a></li>
 <li><a href="#run-the-application">Run the application</a></li>
+<li><a href="#weboscket-clients">Weboscket Clients</a></li>
+<li><a href="#more-websocket-information">More WebSocket Information</a></li>
 </ul></div>
     <div>
       <div id="preamble">
@@ -311,6 +313,89 @@ You can also build the native executable using <code>./mvnw package -Pnative</co
 </div>
 <div class="paragraph">
 <p>You can also test your web socket applications using the approach detailed <a href="https://github.com/quarkusio/quarkus-quickstarts/blob/master/websockets-quickstart/src/test/java/org/acme/websockets/ChatTest.java">here</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="weboscket-clients"><a class="anchor" href="#weboscket-clients"></a>Weboscket Clients</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Quarkus also contains a WebSocket client. You can call <code>ContainerProvider.getWebSocketContainer().connectToServer</code> to create a websocket connection.</p>
+</div>
+<div class="paragraph">
+<p>When you connect to the server you can either pass in the Class of the annotated client endpoint you want to use, or an instance of <code>javax.websocket.Endpoint</code>. If you
+are using the annotated endpoint then you can use the exact same annotations as you can on the server, except it must be annotated with <code>@ClientEndpoint</code> instead of
+<code>@ServerEndpoint</code>.</p>
+</div>
+<div class="paragraph">
+<p>The example below shows the client being used to test the chat endpoint above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="java" class="language-java hljs">package org.acme.websockets;
+
+import java.net.URI;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
+
+import javax.websocket.ClientEndpoint;
+import javax.websocket.ContainerProvider;
+import javax.websocket.OnMessage;
+import javax.websocket.OnOpen;
+import javax.websocket.Session;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.common.http.TestHTTPResource;
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
+public class ChatTest {
+
+    private static final LinkedBlockingDeque&lt;String&gt; MESSAGES = new LinkedBlockingDeque&lt;&gt;();
+
+    @TestHTTPResource("/chat/stu")
+    URI uri;
+
+    @Test
+    public void testWebsocketChat() throws Exception {
+        try (Session session = ContainerProvider.getWebSocketContainer().connectToServer(Client.class, uri)) {
+            Assertions.assertEquals("CONNECT", MESSAGES.poll(10, TimeUnit.SECONDS));
+            Assertions.assertEquals("User stu joined", MESSAGES.poll(10, TimeUnit.SECONDS));
+            session.getAsyncRemote().sendText("hello world");
+            Assertions.assertEquals("&gt;&gt; stu: hello world", MESSAGES.poll(10, TimeUnit.SECONDS));
+        }
+    }
+
+    @ClientEndpoint
+    public static class Client {
+
+        @OnOpen
+        public void open(Session session) {
+            MESSAGES.add("CONNECT");
+            // Send a message to indicate that we are ready,
+            // as the message handler may not be registered immediately after this callback.
+            session.getAsyncRemote().sendText("_ready_");
+        }
+
+        @OnMessage
+        void message(String msg) {
+            MESSAGES.add(msg);
+        }
+
+    }
+
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="more-websocket-information"><a class="anchor" href="#more-websocket-information"></a>More WebSocket Information</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The Quarkus WebSocket implementation is an implementation of <a href="https://eclipse-ee4j.github.io/websocket-api/">Jakarta Websockets</a>.</p>
 </div>
 </div>
 </div>

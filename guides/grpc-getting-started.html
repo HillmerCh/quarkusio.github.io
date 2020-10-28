@@ -279,19 +279,19 @@ public class HelloService extends GreeterGrpc.GreeterImplBase {                 
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Expose your implementation as bean</p>
+<p>Expose your implementation as bean.</p>
 </li>
 <li>
 <p>Extends the <code>ImplBase</code> class. This is a generated class.</p>
 </li>
 <li>
-<p>Implement the methods defined in the service definition (here we have a single method)</p>
+<p>Implement the methods defined in the service definition (here we have a single method).</p>
 </li>
 <li>
-<p>Build and send the response</p>
+<p>Build and send the response.</p>
 </li>
 <li>
-<p>Close the response</p>
+<p>Close the response.</p>
 </li>
 </ol>
 </div>
@@ -401,18 +401,18 @@ public class ExampleResource {
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Inject the service and configure its name.This name is used in the application configuration</p>
+<p>Inject the service and configure its name. This name is used in the application configuration.</p>
 </li>
 <li>
-<p>Use the <em>blocking</em> stub (also a generated class)</p>
+<p>Use the <em>blocking</em> stub (also a generated class).</p>
 </li>
 <li>
-<p>Invoke the service</p>
+<p>Invoke the service.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>We need to configure the application to indicate where is the <code>hello</code> service.
+<p>We need to configure the application to indicate where the <code>hello</code> service is found.
 In the <code>src/main/resources/application.properties</code> file, add the following property:</p>
 </div>
 <div class="listingblock">
@@ -420,9 +420,15 @@ In the <code>src/main/resources/application.properties</code> file, add the foll
 <pre class="highlightjs highlight"><code data-lang="text" class="language-text hljs">quarkus.grpc.clients.hello.host=localhost</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p><code>hello</code> is the name of the service used in the <code>@GrpcService</code> annotation
-<code>host</code> configures the service host (here it&#8217;s localhost).</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>hello</code> is the name of the service used in the <code>@GrpcService</code> annotation.</p>
+</li>
+<li>
+<p><code>host</code> configures the service host (here it&#8217;s localhost).</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
 <p>Then, open <a href="http://localhost:8080/hello/quarkus" class="bare">http://localhost:8080/hello/quarkus</a> in a browser, and you should get <code>Hello quarkus</code>!</p>
