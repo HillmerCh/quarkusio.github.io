@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Wed, 28 Oct 2020 21:51:46 +0000</lastBuildDate>
+        <lastBuildDate>Thu, 29 Oct 2020 00:26:42 +0000</lastBuildDate>
+        
+        <item>
+            <title>Quarkus 1.9.1.Final released - Bugfixes</title>
+            <link>
+                https://quarkus.io/blog/quarkus-1-9-1-final-released/
+            </link>
+            <description>
+                Thanks to all your feedback, here comes 1.9.1.Final with bugfixes and documentation improvements. It is a safe upgrade for everyone using Quarkus 1.9. If you are not using 1.9 already, please refer to the 1.9 migration guide. What&#8217;s new? This release is a maintenance release that fixes various bugs found...
+            </description>
+            <pubDate>Wed, 28 Oct 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-1-9-1-final-released/
+            </guid>
+        </item>
         
         <item>
             <title>Mutiny - Flow control and Back-pressure</title>
@@ -130,20 +144,6 @@
             <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/reactive-messaging-emitter/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Quarkus 1.8.2.Final released - Bugfixes</title>
-            <link>
-                https://quarkus.io/blog/quarkus-1-8-2-final-released/
-            </link>
-            <description>
-                Today, we released Quarkus 1.8.2.Final with some bugfixes and documentation improvements. It is a safe upgrade for everyone using Quarkus 1.8. What&#8217;s new? This release is a maintenance release that fixes various bugs found in 1.8.1.Final and provides some documentation updates. You can get the full changelog of 1.8.2.Final on...
-            </description>
-            <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/quarkus-1-8-2-final-released/
             </guid>
         </item>
         
