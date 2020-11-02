@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Sun, 01 Nov 2020 09:18:10 +0000</lastBuildDate>
+        <lastBuildDate>Mon, 02 Nov 2020 09:27:04 +0000</lastBuildDate>
+        
+        <item>
+            <title>Quarkus native running on a Raspberry Pi</title>
+            <link>
+                https://quarkus.io/blog/quarkus-native-on-a-raspberry-pi/
+            </link>
+            <description>
+                Intro When I&#8217;ve been introduced to Quarkus, back in December 2018, I suddenly had the feeling the Quarkus runtime has the potential of covering ~95% of the software use-cases. My friend Sanne demoed Quarkus on his laptop when the runtime was still in an alpha state, far from being the...
+            </description>
+            <pubDate>Mon, 02 Nov 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-native-on-a-raspberry-pi/
+            </guid>
+        </item>
         
         <item>
             <title>Quarkus 1.9.1.Final released - Bugfixes</title>
@@ -130,20 +144,6 @@
             <pubDate>Fri, 09 Oct 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/quarkus-1-8-3-final-released/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Emitter - Bridging the imperative and the reactive worlds</title>
-            <link>
-                https://quarkus.io/blog/reactive-messaging-emitter/
-            </link>
-            <description>
-                In a previous blog post about Kafka and Avro, we used an emitter to send Kafka messages. In this post, we are going look at this emitter construct a little bit more closely. Injecting an Emitter Injecting an emitter is straightforward. You indicate the targeted channel, i.e., where do you...
-            </description>
-            <pubDate>Tue, 06 Oct 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/reactive-messaging-emitter/
             </guid>
         </item>
         
