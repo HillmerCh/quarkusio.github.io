@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Mon, 02 Nov 2020 09:27:04 +0000</lastBuildDate>
+        <lastBuildDate>Tue, 03 Nov 2020 09:37:09 +0000</lastBuildDate>
+        
+        <item>
+            <title>Kafka - When to commit?</title>
+            <link>
+                https://quarkus.io/blog/kafka-commit-strategies/
+            </link>
+            <description>
+                In a previous blog post, we have looked at failure strategies provided by the Reactive Messaging Kafka connector. But, imagine it&#8217;s our lucky day, and for once it worked. We should inform Kafka that the processing succeeded. In Kafka terminology, we call this: offset commit. This post covers the different...
+            </description>
+            <pubDate>Tue, 03 Nov 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/kafka-commit-strategies/
+            </guid>
+        </item>
         
         <item>
             <title>Quarkus native running on a Raspberry Pi</title>
@@ -130,20 +144,6 @@
             <pubDate>Mon, 12 Oct 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/intellij-quarkus-tools-1.2.0/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Quarkus 1.8.3.Final released - Bugfixes</title>
-            <link>
-                https://quarkus.io/blog/quarkus-1-8-3-final-released/
-            </link>
-            <description>
-                Today, we released Quarkus 1.8.3.Final which contains a fix for an annoying regression and some other fixes. It is a safe upgrade for everyone using Quarkus 1.8. What&#8217;s new? This release is a maintenance release that fixes various bugs found in 1.8.2.Final and provides some documentation updates. The main change...
-            </description>
-            <pubDate>Fri, 09 Oct 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/quarkus-1-8-3-final-released/
             </guid>
         </item>
         
