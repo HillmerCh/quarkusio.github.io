@@ -1023,6 +1023,11 @@ precedence:</p>
 </thead>
 <tbody>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>smallrye.jwt.verify.key.location</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>NONE</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Location of the verification key which can point to both public and secret keys. Secret keys can only be in the JWK format. Note that 'mp.jwt.verify.publickey.location' will be ignored if this property is set.</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>smallrye.jwt.verify.algorithm</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code><code>RS256</code></code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Signature algorithm. Set it to <code>ES256</code> to support the Elliptic Curve signature algorithm.</p></td>
@@ -1055,7 +1060,7 @@ precedence:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>smallrye.jwt.always-check-authorization</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Set this property to true for Authorization header be checked even if the smallrye.jwt.token.header is set to Cookie but no cookie with a smallrye.jwt.token.cookie name exists.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Set this property to <code>true</code> for <code>Authorization</code> header be checked even if the <code>smallrye.jwt.token.header</code> is set to <code>Cookie</code> but no cookie with a <code>smallrye.jwt.token.cookie</code> name exists.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>smallrye.jwt.token.schemes</code></p></td>
@@ -1110,7 +1115,7 @@ precedence:</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>smallrye.jwt.jwks.forced-refresh-interval</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>30</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Forced JWK cache refresh interval in minutes which is used to restrict the frequency of the forced refresh attempts which may happen when the token verification fails due to the cache having no JWK key with a kid property matching the current token&#8217;s kid header. It will be ignored unless the mp.jwt.verify.publickey.location points to the HTTPS URL based JWK set.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Forced JWK cache refresh interval in minutes which is used to restrict the frequency of the forced refresh attempts which may happen when the token verification fails due to the cache having no JWK key with a <code>kid</code> property matching the current token&#8217;s <code>kid</code> header. It will be ignored unless the <code>mp.jwt.verify.publickey.location</code> points to the HTTPS URL based JWK set.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>smallrye.jwt.expiration.grace</code></p></td>
@@ -1418,7 +1423,7 @@ Jwt.signAndEncrypt("/claims.json");</code></pre>
 <div class="sect2">
 <h3 id="smallrye-jwt-builder-configuration"><a class="anchor" href="#smallrye-jwt-builder-configuration"></a>SmallRye JWT Builder configuration</h3>
 <div class="paragraph">
-<p>Smallrye JWT supports the following properties which can be used to customize the way claims are signed and encrypted:</p>
+<p>SmallRye JWT supports the following properties which can be used to customize the way claims are signed and encrypted:</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
