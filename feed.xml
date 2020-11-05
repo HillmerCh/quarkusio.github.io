@@ -5,7 +5,21 @@
         <title>Quarkus</title>
         <link>https://quarkus.io</link>
         <description>Quarkus: Supersonic Subatomic Java</description>
-        <lastBuildDate>Thu, 05 Nov 2020 15:57:34 +0000</lastBuildDate>
+        <lastBuildDate>Thu, 05 Nov 2020 18:37:23 +0000</lastBuildDate>
+        
+        <item>
+            <title>Quarkus 1.9.2.Final released - Bugfixes</title>
+            <link>
+                https://quarkus.io/blog/quarkus-1-9-2-final-released/
+            </link>
+            <description>
+                Just a week after 1.9.1.Final, here comes 1.9.2.Final with some bugfixes and documentation improvements. Thanks a lot to everyone providing feedback and pull requests! It is a safe upgrade for everyone using Quarkus 1.9. If you are not using 1.9 already, please refer to the 1.9 migration guide. What&#8217;s new?...
+            </description>
+            <pubDate>Thu, 05 Nov 2020 00:00:00 +0000</pubDate>
+            <guid>
+                https://quarkus.io/blog/quarkus-1-9-2-final-released/
+            </guid>
+        </item>
         
         <item>
             <title>Kafka - When to commit?</title>
@@ -130,20 +144,6 @@
             <pubDate>Tue, 13 Oct 2020 00:00:00 +0000</pubDate>
             <guid>
                 https://quarkus.io/blog/uni-retry/
-            </guid>
-        </item>
-        
-        <item>
-            <title>Quarkus Tools for IntelliJ 1.2.0 released!</title>
-            <link>
-                https://quarkus.io/blog/intellij-quarkus-tools-1.2.0/
-            </link>
-            <description>
-                We are very pleased to announce the 1.2.0 release of Quarkus Tools for IntelliJ. This release brings enhanced support for Eclipse Microprofile. Eclipse Microprofile Reactive Messaging If your application is based on Eclipse Microprofile Reactive Messaging, properties are enabled for: @Connector annotation @Outgoing annotation @Incoming annotation Here is an example...
-            </description>
-            <pubDate>Mon, 12 Oct 2020 00:00:00 +0000</pubDate>
-            <guid>
-                https://quarkus.io/blog/intellij-quarkus-tools-1.2.0/
             </guid>
         </item>
         
